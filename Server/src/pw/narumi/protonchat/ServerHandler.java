@@ -1,9 +1,10 @@
 package pw.narumi.protonchat;
 
-import pw.narumi.Bootstrap;
-import pw.narumi.protonchat.io.ProtonInputStream;
-import pw.narumi.protonchat.io.ProtonOutputStream;
+import pw.narumi.api.user.User;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 public class ServerHandler implements Handler {
 
-    private final Map<String, Socket> connectedUsers = new HashMap<>();
+    private final Map<User, Socket> connectedUsers = new HashMap<>();
     private ServerSocket serverSocket;
 
     @Override
@@ -24,43 +25,28 @@ public class ServerHandler implements Handler {
         while (serverSocket.isBound()) {
             System.out.println("connected");
             final Socket socket = serverSocket.accept();
-            if (!validateUser(socket)) {
-                socket.close();
-            }
+            addUser(socket);
         }
     }
 
-    @Override
-    public boolean validateUser(final Socket socket) throws Exception {
-        final ProtonInputStream inputStream = new ProtonInputStream(socket.getInputStream());
-        final ProtonOutputStream outputStream = new ProtonOutputStream(socket.getOutputStream());
+    private void addUser(final Socket socket) throws Exception {
+        final DataInputStream input = new DataInputStream(socket.getInputStream());
+        final String name = input.readUTF();
+        final long id = input.readLong();
 
-        outputStream.writeString("LOGIN");
-
-        final String user = Bootstrap.getProtonChat().decrypt(inputStream.readString());
-        final String password = Bootstrap.getProtonChat().decrypt(inputStream.readString());
-
-        //FIXME: Dodac baze danych i jebane sprawdzanie oraz aesa h3h
-        if (!user.equals("test1") && !password.equals("chujnia1")) {
-            outputStream.writeBoolean(false);
-            socket.close();
-            return false;
-        }
-
-        outputStream.writeBoolean(true);
+        final User user = new User(name, id);
         connectedUsers.put(user, socket);
         addMessageHandler(user, socket);
-        return true;
     }
 
     @Override
-    public void addMessageHandler(final String nick, final Socket socket) throws Exception {
+    public void addMessageHandler(final User user, final Socket socket) throws Exception {
         new Thread(() -> {
             try {
-                final ProtonInputStream inputStream = new ProtonInputStream(socket.getInputStream());
+                final DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                 while (socket.isConnected() && inputStream.available() > 0) {
-                    final String message = inputStream.readString();
-                    sendMessage(nick, message);
+                    final String message = inputStream.readUTF();
+                    sendMessage(user, message);
                 }
             }catch (final Exception e) {
                 e.printStackTrace();
@@ -69,12 +55,12 @@ public class ServerHandler implements Handler {
     }
 
     @Override
-    public void sendMessage(final String nick, final String message) throws Exception {
-        for (Map.Entry<String, Socket> connectedUser : connectedUsers.entrySet()) {
-            if (!connectedUser.getKey().equals(nick)) {
-                final ProtonOutputStream outputStream = new ProtonOutputStream(connectedUser.getValue().getOutputStream());
-                outputStream.writeString(nick);
-                outputStream.writeString(message);
+    public void sendMessage(final User user, final String message) throws Exception {
+        for (Map.Entry<User, Socket> connectedUser : connectedUsers.entrySet()) {
+            if (connectedUser.getKey().getUserId() != user.getUserId()) {
+                final DataOutputStream outputStream = new DataOutputStream(connectedUser.getValue().getOutputStream());
+                outputStream.writeUTF(user.getUserName());
+                outputStream.writeUTF(message);
             }
         }
     }

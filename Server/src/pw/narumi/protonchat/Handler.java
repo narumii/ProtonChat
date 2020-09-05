@@ -1,5 +1,7 @@
 package pw.narumi.protonchat;
 
+import pw.narumi.api.user.User;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -9,9 +11,7 @@ public interface Handler {
 
     void acceptConnection() throws Exception;
 
-    boolean validateUser(final Socket socket) throws Exception;
+    void addMessageHandler(final User user, final Socket socket) throws Exception;
 
-    void addMessageHandler(final String nick, final Socket socket) throws Exception;
-
-    void sendMessage(final String nick, final String message) throws Exception;
+    void sendMessage(final User user, final String message) throws Exception;
 }
