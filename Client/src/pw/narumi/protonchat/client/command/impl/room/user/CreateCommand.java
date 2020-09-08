@@ -32,9 +32,8 @@ public class CreateCommand extends Command {
             final Socket socket = ProtonChat.INSTANCE.get().getSocket();
             final DataOutputStream output = new DataOutputStream(socket.getOutputStream());
 
-            output.writeUTF(user.getUserName());
+            output.writeUTF("@create");
             output.writeLong(user.getUserId());
-            output.writeUTF("create");
             output.writeUTF(name);
             output.writeUTF(password);
         }catch (final Exception e) {

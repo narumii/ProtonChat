@@ -16,10 +16,6 @@ public class NameCommand extends Command {
 
     @Override
     public void execute(final User user, final String... args) throws CommandException {
-        final Room room = user.getConnectedTo();
-        if (user.getUserId() != room.getRoomAdmin().getUserId())
-            throw new CommandException("You are not room admin.");
-
         if (args.length != 1)
             throw new CommandException("Usage: name <room name>");
 
@@ -27,8 +23,8 @@ public class NameCommand extends Command {
             final Socket socket = ProtonChat.INSTANCE.get().getSocket();
             final DataOutputStream output = new DataOutputStream(socket.getOutputStream());
 
+            output.writeUTF("@name");
             output.writeLong(user.getUserId());
-            output.writeUTF("name");
             output.writeUTF(args[0]);
         }catch (final Exception e) {
             e.printStackTrace();

@@ -26,15 +26,12 @@ public class JoinCommand extends Command {
         try {
             final String name = args[0];
             final String password = args[1];
-            final Room room = new Room(name, user);
-            room.setRoomPassword(password.getBytes());
 
             final Socket socket = ProtonChat.INSTANCE.get().getSocket();
             final DataOutputStream output = new DataOutputStream(socket.getOutputStream());
 
-            output.writeUTF(user.getUserName());
+            output.writeUTF("@join");
             output.writeLong(user.getUserId());
-            output.writeUTF("join");
             output.writeUTF(name);
             output.writeUTF(password);
         }catch (final Exception e) {

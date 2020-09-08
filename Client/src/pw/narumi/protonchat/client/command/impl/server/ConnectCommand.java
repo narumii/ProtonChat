@@ -6,6 +6,7 @@ import pw.narumi.protonchat.client.ProtonChat;
 import pw.narumi.protonchat.client.command.Command;
 import pw.narumi.protonchat.client.command.CommandException;
 
+import java.io.DataOutputStream;
 import java.net.Socket;
 
 public class ConnectCommand extends Command {
@@ -27,7 +28,12 @@ public class ConnectCommand extends Command {
 
             final String ip = args[0];
             final int port = NumberUtils.parse(args[1], 1918);
-            ProtonChat.INSTANCE.get().setSocket(new Socket(ip, port));
+            final Socket socket = new Socket(ip, port);
+            ProtonChat.INSTANCE.get().setSocket(socket);
+
+            final DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+            output.writeUTF(user.getUserName());
+            output.writeLong(user.getUserId());
         }catch (final Exception e) {
             System.err.println("Can't connect to the server: " + e.getMessage());
         }

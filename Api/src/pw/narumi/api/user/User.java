@@ -17,6 +17,7 @@ public class User {
     private final long userId;
 
     private KeyPair keyPair;
+    private String address;
 
     public User(final String userName, final long userId) {
         this.userName = userName;
@@ -49,5 +50,13 @@ public class User {
 
     public void setKeyPair(final KeyPair keyPair) {
         this.keyPair = keyPair;
+    }
+
+    public String getAddress() {
+        return this.address;
+    }
+
+    public void setAddress(final String address) {
+        this.address = address;
     }
 }

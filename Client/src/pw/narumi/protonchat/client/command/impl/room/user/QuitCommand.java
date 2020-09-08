@@ -23,9 +23,8 @@ public class QuitCommand extends Command {
             final Socket socket = ProtonChat.INSTANCE.get().getSocket();
             final DataOutputStream output = new DataOutputStream(socket.getOutputStream());
 
-            output.writeUTF(user.getUserName());
+            output.writeUTF("@quit");
             output.writeLong(user.getUserId());
-            output.writeUTF("quit");
         }catch (final Exception e) {
             e.printStackTrace();
         }

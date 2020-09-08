@@ -1,6 +1,5 @@
 package pw.narumi.protonchat.client;
 
-import pw.narumi.protonchat.client.command.impl.ClearCommand;
 import pw.narumi.protonchat.client.command.impl.ExitCommand;
 import pw.narumi.protonchat.client.command.impl.hash.GenerateKeyCommand;
 import pw.narumi.protonchat.client.command.impl.hash.SetDeocdeKeyCommand;
@@ -12,11 +11,9 @@ public class Bootstrap {
 
     public static void main(final String... args) {
         final ProtonChat protonChat = ProtonChat.INSTANCE.get();
-
         protonChat.registerCommand(
                 new GenerateKeyCommand("generatekey"),
                 new SetDeocdeKeyCommand("setdecodekey"),
-                new ClearCommand("c"),
                 new ExitCommand("e"),
                 new TestHashCommand("testhash"),
                 new ConnectCommand("connect"),

@@ -11,11 +11,6 @@ public class ExitCommand extends Command {
 
     @Override
     public void execute(final User user, final String... args) throws CommandException {
-        System.out.println("\r");
-        for (int i = 0; i < Short.MAX_VALUE; i++) {
-            System.out.println(" ");
-        }
-        System.out.println("\n");
         System.exit(-1);
     }
 }

@@ -3,9 +3,6 @@ package pw.narumi.protonchat;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProtonChat {
 
@@ -33,7 +30,7 @@ public class ProtonChat {
         return serverSocket;
     }
 
-    public String decrypt(final String string) {
-        return string;
+    public Handler getHandler() {
+        return this.handler;
     }
 }
