@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 
-public class Bootstrap {
+public final class Bootstrap {
 
     public static void main(final String... args) throws IOException {
         final SocketChannel socketChannel = SocketChannel.open();
