@@ -23,6 +23,10 @@ public class ClientManager {
         this.clients.forEach(client -> client.sendPacket(packet));
     }
 
+    public void sendPacketTo(final Packet packet, final String user) {
+        this.clients.stream().filter(client -> client.getUsername().equals(user)).forEach(client -> client.sendPacket(packet));
+    }
+
     public Optional<Client> findClient(final SocketChannel channel) {
         return this.clients.stream()
                 .filter(client -> client.getChannel().equals(channel))

@@ -11,12 +11,12 @@ import java.io.IOException;
 public class ConnectUserPacket implements Packet {
 
     private String userName;
-    private long id;
+    private long userID;
 
     @Override
     public void read(final PacketInputStream inputStream) throws IOException {
         this.userName = inputStream.readUTF();
-        this.id = inputStream.readLong();
+        this.userID = inputStream.readLong();
     }
 
     @Override

@@ -15,8 +15,9 @@ public class Client {
 
     private final SocketChannel channel;
     private String username;
-    private long userId;
+    private long userID;
     private PacketHandler packetHandler;
+    private boolean logged;
 
     public Client(final SocketChannel channel) {
         this.channel = channel;
