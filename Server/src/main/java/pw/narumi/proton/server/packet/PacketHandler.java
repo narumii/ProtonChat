@@ -1,9 +1,10 @@
 package pw.narumi.proton.server.packet;
 
-import pw.narumi.proton.network.packet.Packet;
+import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.server.client.Client;
 
-public abstract class PacketHandler {
+@FunctionalInterface
+public interface PacketHandler {
 
-    public abstract void packetReceived(final Client client, final Packet packet);
+    void packetReceived(final Client client, final Packet packet);
 }

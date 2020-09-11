@@ -1,10 +1,9 @@
 package pw.narumi.proton.server;
 
 import lombok.Getter;
-import lombok.Setter;
-import pw.narumi.proton.network.io.PacketInputStream;
-import pw.narumi.proton.network.packet.Packet;
-import pw.narumi.proton.network.packet.PacketRegistry;
+import pw.narumi.proton.shared.io.PacketInputStream;
+import pw.narumi.proton.shared.packet.Packet;
+import pw.narumi.proton.shared.packet.PacketRegistry;
 import pw.narumi.proton.server.client.Client;
 import pw.narumi.proton.server.client.ClientManager;
 import pw.narumi.proton.server.packet.incoming.ClientAddPublicKeyPacket;
@@ -26,21 +25,23 @@ import java.util.Iterator;
 
 @Getter
 public enum ProtonServer {
+    
     INSTANCE;
 
-    private PacketRegistry incomingPacketRegistry;
-    private PacketRegistry outgoingPacketRegistry;
+    private final ClientManager clientManager;
+    private final PacketRegistry incomingPacketRegistry;
+    private final PacketRegistry outgoingPacketRegistry;
+
     ProtonServer() {
+        this.clientManager = new ClientManager();
         this.incomingPacketRegistry = new PacketRegistry(false);
         this.outgoingPacketRegistry = new PacketRegistry(true);
-
         this.incomingPacketRegistry.registerPackets(
                 ClientAddPublicKeyPacket.class,
                 ClientChatPacket.class,
                 ClientCommandPacket.class,
                 ConnectUserPacket.class
         );
-
         this.outgoingPacketRegistry.registerPackets(
                 AddPublicKeyPacket.class,
                 DisconnectPacket.class,
@@ -55,56 +56,62 @@ public enum ProtonServer {
         this.selector = Selector.open();
         this.socketChannel = ServerSocketChannel.open();
         this.socketChannel.bind(new InetSocketAddress(ip, port));
-        System.out.println("Started ProtonServer on address: " + this.socketChannel.getLocalAddress());
-
         this.socketChannel.configureBlocking(false);
         this.socketChannel.register(this.selector, this.socketChannel.validOps());
-        this.selector.select();
+        System.out.println("Started ProtonServer on address: " + this.socketChannel.getLocalAddress());
 
-        final Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-        while (iterator.hasNext()) {
-            final SelectionKey key = iterator.next();
-            iterator.remove();
-            if (!key.isValid())
-                continue;
+        while (this.selector.isOpen() && this.socketChannel.isOpen()) {
+            this.selector.select();
+            final Iterator<SelectionKey> iterator = this.selector.selectedKeys().iterator();
+            while (iterator.hasNext()) {
+                final SelectionKey key = iterator.next();
+                iterator.remove();
 
-            if (key.isAcceptable()) {
-                accept(selector, key);
-                continue;
+                if (key.isAcceptable()) {
+                    accept(key);
+                } else if (key.isReadable()) {
+                    read(key);
+                }
             }
-
-            read(key);
         }
     }
 
-    private void accept(final Selector selector, final SelectionKey key) throws IOException {
+    public void closeServer() {
+        try {
+            this.selector.close();
+            this.socketChannel.close();
+        } catch (final IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void accept(final SelectionKey key) throws IOException {
         final SocketChannel channel = ((ServerSocketChannel) key.channel()).accept();
         channel.configureBlocking(false);
-        channel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-        ClientManager.INSTANCE.addClient(new Client(channel));
+        channel.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+        this.clientManager.addClient(new Client(channel));
     }
 
     private void read(final SelectionKey key) {
-        ClientManager.INSTANCE.findClient((SocketChannel) key.channel()).ifPresent(client -> {
+        this.clientManager.findClient((SocketChannel) key.channel()).ifPresent(client -> {
             try {
-                final SocketChannel channel = client.getChannel();
                 final ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
-                if (channel.read(byteBuffer) == -1) {
-                    ClientManager.INSTANCE.removeClient(client);
-                    channel.close();
-                    key.cancel();
+                if (client.getChannel().read(byteBuffer) == -1) {
+                    this.clientManager.removeClient(client);
+                    client.close();
                     return;
                 }
 
                 try (final PacketInputStream inputStream = new PacketInputStream(byteBuffer.array())) {
                     final Packet packet = this.incomingPacketRegistry.createPacket(inputStream.readVarInt());
-
                     if (packet != null) {
                         packet.read(inputStream);
                         client.getPacketHandler().packetReceived(client, packet);
                     }
                 }
             } catch (final IOException ex) {
+                this.clientManager.removeClient(client);
+                client.close();
                 ex.printStackTrace();
             }
         });

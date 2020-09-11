@@ -1,15 +1,15 @@
 package pw.narumi.proton.server.packet.outgoing;
 
-import pw.narumi.proton.network.io.PacketInputStream;
-import pw.narumi.proton.network.io.PacketOutputStream;
-import pw.narumi.proton.network.packet.Packet;
+import pw.narumi.proton.shared.io.PacketInputStream;
+import pw.narumi.proton.shared.io.PacketOutputStream;
+import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.IOException;
 
 public class AddPublicKeyPacket implements Packet {
 
-    private String userName;
-    private String publicKey;
+    private final String userName;
+    private final String publicKey;
 
     public AddPublicKeyPacket(final String userName, final String publicKey) {
         this.userName = userName;

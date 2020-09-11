@@ -1,4 +1,4 @@
-package pw.narumi.proton.network.io;
+package pw.narumi.proton.shared.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -15,7 +15,7 @@ public class PacketInputStream extends DataInputStream {
         int result = 0;
         byte read;
         do {
-            read = readByte();
+            read = this.readByte();
             result |= ((read & 127) << (7 * numRead));
             if (numRead++ > 5)
                 throw new RuntimeException("VarInt is too big!");

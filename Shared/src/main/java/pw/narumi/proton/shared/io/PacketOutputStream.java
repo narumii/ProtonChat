@@ -1,4 +1,4 @@
-package pw.narumi.proton.network.io;
+package pw.narumi.proton.shared.io;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -18,11 +18,11 @@ public class PacketOutputStream extends DataOutputStream {
             if (value != 0)
                 temp |= 128;
 
-            writeByte(temp);
+            this.writeByte(temp);
         } while (value != 0);
     }
 
     public ByteBuffer asBuffer() {
-        return ByteBuffer.wrap(((ByteArrayOutputStream) out).toByteArray());
+        return ByteBuffer.wrap(((ByteArrayOutputStream) this.out).toByteArray());
     }
 }

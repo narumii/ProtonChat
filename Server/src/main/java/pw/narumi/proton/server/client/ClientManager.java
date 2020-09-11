@@ -1,26 +1,30 @@
 package pw.narumi.proton.server.client;
 
+import pw.narumi.proton.shared.packet.Packet;
+
 import java.nio.channels.SocketChannel;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public enum ClientManager {
-
-    INSTANCE;
+public class ClientManager {
 
     private final List<Client> clients = new CopyOnWriteArrayList<>();
 
     public void addClient(final Client client) {
-        clients.add(client);
+        this.clients.add(client);
     }
 
     public void removeClient(final Client client) {
-        clients.remove(client);
+        this.clients.remove(client);
+    }
+
+    public void sendPacket(final Packet packet) {
+        this.clients.forEach(client -> client.sendPacket(packet));
     }
 
     public Optional<Client> findClient(final SocketChannel channel) {
-        return clients.stream()
+        return this.clients.stream()
                 .filter(client -> client.getChannel().equals(channel))
                 .findFirst();
     }

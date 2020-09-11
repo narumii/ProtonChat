@@ -1,11 +1,13 @@
 package pw.narumi.proton.server.packet.incoming;
 
-import pw.narumi.proton.network.io.PacketInputStream;
-import pw.narumi.proton.network.io.PacketOutputStream;
-import pw.narumi.proton.network.packet.Packet;
+import lombok.Getter;
+import pw.narumi.proton.shared.io.PacketInputStream;
+import pw.narumi.proton.shared.io.PacketOutputStream;
+import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.IOException;
 
+@Getter
 public class ClientCommandPacket implements Packet {
 
     private long userId;
@@ -18,5 +20,5 @@ public class ClientCommandPacket implements Packet {
     }
 
     @Override
-    public void write(final PacketOutputStream outputStream) throws IOException {}
+    public void write(final PacketOutputStream outputStream) {}
 }

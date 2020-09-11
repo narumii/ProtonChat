@@ -20,5 +20,6 @@ public final class Bootstrap {
         }
 
         ProtonServer.INSTANCE.initializeServer("127.0.0.1", port);
+        Runtime.getRuntime().addShutdownHook(new Thread(ProtonServer.INSTANCE::closeServer));
     }
 }
