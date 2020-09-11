@@ -22,9 +22,9 @@ public final class Bootstrap {
         socketChannel.register(selector, socketChannel.validOps());
         selector.select();
 
-        Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+        final Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
         while (iterator.hasNext()) {
-            SelectionKey key = iterator.next();
+            final SelectionKey key = iterator.next();
             iterator.remove();
             if (!key.isValid())
                 continue;
@@ -38,7 +38,7 @@ public final class Bootstrap {
         }
     }
 
-    private static void accept(Selector selector, SelectionKey key) throws IOException {
+    private static void accept(final Selector selector, final SelectionKey key) throws IOException {
         final SocketChannel channel = ((ServerSocketChannel) key.channel()).accept();
         channel.configureBlocking(false);
         channel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
