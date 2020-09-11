@@ -1,8 +1,9 @@
 package pw.narumi.proton.network.io;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 public class PacketOutputStream extends DataOutputStream {
 
@@ -12,17 +13,16 @@ public class PacketOutputStream extends DataOutputStream {
 
     public void writeVarInt(int value) throws IOException {
         do {
-            byte temp = (byte)(value & 0b01111111);
-            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
+            byte temp = (byte) (value & 127);
             value >>>= 7;
-            if (value != 0) {
-                temp |= 0b10000000;
-            }
+            if (value != 0)
+                temp |= 128;
+
             writeByte(temp);
         } while (value != 0);
     }
 
-    public ByteBuffer toBuffer() {
+    public ByteBuffer asBuffer() {
         return ByteBuffer.wrap(((ByteArrayOutputStream) out).toByteArray());
     }
 }

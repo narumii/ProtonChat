@@ -3,7 +3,6 @@ package pw.narumi.proton.network.io;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 public class PacketInputStream extends DataInputStream {
 
@@ -17,14 +16,10 @@ public class PacketInputStream extends DataInputStream {
         byte read;
         do {
             read = readByte();
-            int value = (read & 0b01111111);
-            result |= (value << (7 * numRead));
-
-            numRead++;
-            if (numRead > 5) {
-                throw new RuntimeException("VarInt is too big");
-            }
-        } while ((read & 0b10000000) != 0);
+            result |= ((read & 127) << (7 * numRead));
+            if (numRead++ > 5)
+                throw new RuntimeException("VarInt is too big!");
+        } while ((read & 128) != 0);
 
         return result;
     }
