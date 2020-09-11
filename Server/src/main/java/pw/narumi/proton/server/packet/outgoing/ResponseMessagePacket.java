@@ -1,9 +1,9 @@
 package pw.narumi.proton.server.packet.outgoing;
 
-import pw.narumi.proton.shared.io.PacketInputStream;
-import pw.narumi.proton.shared.io.PacketOutputStream;
 import pw.narumi.proton.shared.packet.Packet;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class ResponseMessagePacket extends Packet {
@@ -15,10 +15,10 @@ public class ResponseMessagePacket extends Packet {
     }
 
     @Override
-    public void read(final PacketInputStream inputStream) {}
+    public void read(final DataInputStream inputStream) {}
 
     @Override
-    public void write(final PacketOutputStream outputStream) throws IOException {
+    public void write(final DataOutputStream outputStream) throws IOException {
         outputStream.writeUTF(message);
     }
 }
