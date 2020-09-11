@@ -22,5 +22,4 @@ public class Client {
     public void setUsername(final String username) {
         this.username = username;
     }
-
 }
