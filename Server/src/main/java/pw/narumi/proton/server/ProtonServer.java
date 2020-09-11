@@ -57,7 +57,7 @@ public enum ProtonServer {
         this.socketChannel = ServerSocketChannel.open();
         this.socketChannel.bind(new InetSocketAddress(ip, port));
         this.socketChannel.configureBlocking(false);
-        this.socketChannel.register(this.selector, this.socketChannel.validOps());
+        this.socketChannel.register(this.selector, SelectionKey.OP_ACCEPT);
         System.out.println("Started ProtonServer on address: " + this.socketChannel.getLocalAddress());
 
         while (this.selector.isOpen() && this.socketChannel.isOpen()) {
