@@ -13,6 +13,12 @@ public class PacketRegistry {
         this.outgoing = outgoing;
     }
 
+    public void registerPackets(final Class<? extends Packet>... clazz) {
+        for (final Class<? extends Packet> aClass : clazz) {
+            registerPacket(aClass);
+        }
+    }
+
     public void registerPacket(Class<? extends Packet> clazz) {
         if (outgoing) {
             outgoingPackets.put(clazz, outgoingPackets.size() + 1);

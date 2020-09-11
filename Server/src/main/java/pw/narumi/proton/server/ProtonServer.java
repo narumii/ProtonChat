@@ -7,6 +7,13 @@ import pw.narumi.proton.network.packet.Packet;
 import pw.narumi.proton.network.packet.PacketRegistry;
 import pw.narumi.proton.server.client.Client;
 import pw.narumi.proton.server.client.ClientManager;
+import pw.narumi.proton.server.packet.incoming.ClientAddPublicKeyPacket;
+import pw.narumi.proton.server.packet.incoming.ClientChatPacket;
+import pw.narumi.proton.server.packet.incoming.ClientCommandPacket;
+import pw.narumi.proton.server.packet.incoming.ConnectUserPacket;
+import pw.narumi.proton.server.packet.outgoing.AddPublicKeyPacket;
+import pw.narumi.proton.server.packet.outgoing.DisconnectPacket;
+import pw.narumi.proton.server.packet.outgoing.ResponseMessagePacket;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -19,13 +26,26 @@ import java.util.Iterator;
 
 @Getter
 public enum ProtonServer {
-    INSTACE;
+    INSTANCE;
 
     private PacketRegistry incomingPacketRegistry;
     private PacketRegistry outgoingPacketRegistry;
     ProtonServer() {
         this.incomingPacketRegistry = new PacketRegistry(false);
         this.outgoingPacketRegistry = new PacketRegistry(true);
+
+        this.incomingPacketRegistry.registerPackets(
+                ClientAddPublicKeyPacket.class,
+                ClientChatPacket.class,
+                ClientCommandPacket.class,
+                ConnectUserPacket.class
+        );
+
+        this.outgoingPacketRegistry.registerPackets(
+                AddPublicKeyPacket.class,
+                DisconnectPacket.class,
+                ResponseMessagePacket.class
+        );
     }
 
     private Selector selector;
