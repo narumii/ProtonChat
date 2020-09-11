@@ -6,7 +6,7 @@ import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.IOException;
 
-public class ServerChatPacket implements Packet {
+public class ServerChatPacket extends Packet {
 
     private final String user;
     private final String message;
@@ -17,9 +17,7 @@ public class ServerChatPacket implements Packet {
     }
 
     @Override
-    public void read(final PacketInputStream inputStream) throws IOException {
-
-    }
+    public void read(final PacketInputStream inputStream) {}
 
     @Override
     public void write(final PacketOutputStream outputStream) throws IOException {

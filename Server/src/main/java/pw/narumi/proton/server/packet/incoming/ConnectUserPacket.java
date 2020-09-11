@@ -8,15 +8,13 @@ import pw.narumi.proton.shared.packet.Packet;
 import java.io.IOException;
 
 @Getter
-public class ConnectUserPacket implements Packet {
+public class ConnectUserPacket extends Packet {
 
     private String userName;
-    private long userID;
 
     @Override
     public void read(final PacketInputStream inputStream) throws IOException {
         this.userName = inputStream.readUTF();
-        this.userID = inputStream.readLong();
     }
 
     @Override

@@ -5,9 +5,13 @@ import pw.narumi.proton.shared.io.PacketOutputStream;
 
 import java.io.IOException;
 
-public interface Packet {
+public abstract class Packet {
 
-    void read(final PacketInputStream inputStream) throws IOException;
+    public abstract void read(final PacketInputStream inputStream) throws IOException;
 
-    void write(final PacketOutputStream outputStream) throws IOException;
+    public abstract void write(final PacketOutputStream outputStream) throws IOException;
+
+    public final void handle(final PacketHandler packetHandler) {
+        packetHandler.packetReceived(this);
+    }
 }

@@ -6,7 +6,7 @@ import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.IOException;
 
-public class AddPublicKeyPacket implements Packet {
+public class AddPublicKeyPacket extends Packet {
 
     private final String userName;
     private final String publicKey;
@@ -17,8 +17,7 @@ public class AddPublicKeyPacket implements Packet {
     }
 
     @Override
-    public void read(final PacketInputStream inputStream) throws IOException {
-    }
+    public void read(final PacketInputStream inputStream) {}
 
     @Override
     public void write(final PacketOutputStream outputStream) throws IOException {

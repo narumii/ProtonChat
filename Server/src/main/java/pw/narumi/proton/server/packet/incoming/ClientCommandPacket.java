@@ -8,14 +8,12 @@ import pw.narumi.proton.shared.packet.Packet;
 import java.io.IOException;
 
 @Getter
-public class ClientCommandPacket implements Packet {
+public class ClientCommandPacket extends Packet {
 
-    private long userID;
     private String command;
 
     @Override
     public void read(final PacketInputStream inputStream) throws IOException {
-        this.userID = inputStream.readLong();
         this.command = inputStream.readUTF();
     }
 

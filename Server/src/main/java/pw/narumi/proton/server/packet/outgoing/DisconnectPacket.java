@@ -6,7 +6,7 @@ import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.IOException;
 
-public class DisconnectPacket implements Packet {
+public class DisconnectPacket extends Packet {
 
     private final String message;
 

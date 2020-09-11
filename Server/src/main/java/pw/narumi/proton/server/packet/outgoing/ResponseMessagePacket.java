@@ -6,7 +6,7 @@ import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.IOException;
 
-public class ResponseMessagePacket implements Packet {
+public class ResponseMessagePacket extends Packet {
 
     private final String message;
 

@@ -1,9 +1,6 @@
 package pw.narumi.proton.server;
 
 import lombok.Getter;
-import pw.narumi.proton.shared.io.PacketInputStream;
-import pw.narumi.proton.shared.packet.Packet;
-import pw.narumi.proton.shared.packet.PacketRegistry;
 import pw.narumi.proton.server.client.Client;
 import pw.narumi.proton.server.client.ClientManager;
 import pw.narumi.proton.server.packet.incoming.ClientAddPublicKeyPacket;
@@ -13,6 +10,9 @@ import pw.narumi.proton.server.packet.incoming.ConnectUserPacket;
 import pw.narumi.proton.server.packet.outgoing.AddPublicKeyPacket;
 import pw.narumi.proton.server.packet.outgoing.DisconnectPacket;
 import pw.narumi.proton.server.packet.outgoing.ResponseMessagePacket;
+import pw.narumi.proton.shared.io.PacketInputStream;
+import pw.narumi.proton.shared.packet.Packet;
+import pw.narumi.proton.shared.packet.PacketRegistry;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -60,20 +60,28 @@ public enum ProtonServer {
         this.socketChannel.register(this.selector, SelectionKey.OP_ACCEPT);
         System.out.println("Started ProtonServer on address: " + this.socketChannel.getLocalAddress());
 
-        while (this.selector.isOpen() && this.socketChannel.isOpen()) {
-            this.selector.select();
-            final Iterator<SelectionKey> iterator = this.selector.selectedKeys().iterator();
-            while (iterator.hasNext()) {
-                final SelectionKey key = iterator.next();
-                iterator.remove();
+        new Thread(() -> {
+            try {
+                while (this.selector.isOpen() && this.socketChannel.isOpen()) {
+                    this.selector.select();
+                    final Iterator<SelectionKey> iterator = this.selector.selectedKeys().iterator();
+                    while (iterator.hasNext()) {
+                        final SelectionKey key = iterator.next();
+                        iterator.remove();
 
-                if (key.isAcceptable()) {
-                    accept(key);
-                } else if (key.isReadable()) {
-                    read(key);
+                        if (key.isAcceptable()) {
+                            accept(key);
+                        } else if (key.isReadable()) {
+                            read(key);
+                        }
+                    }
                 }
+
+                throw new ThreadDeath();
+            } catch (final IOException ex) {
+                ex.printStackTrace();
             }
-        }
+        }).start();
     }
 
     public void closeServer() {
@@ -106,7 +114,7 @@ public enum ProtonServer {
                     final Packet packet = this.incomingPacketRegistry.createPacket(inputStream.readVarInt());
                     if (packet != null) {
                         packet.read(inputStream);
-                        client.getPacketHandler().packetReceived(client, packet);
+                        packet.handle(client.getPacketHandler());
                     }
                 }
             } catch (final IOException ex) {

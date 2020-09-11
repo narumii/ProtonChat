@@ -8,19 +8,15 @@ import pw.narumi.proton.shared.packet.Packet;
 import java.io.IOException;
 
 @Getter
-public class ClientAddPublicKeyPacket implements Packet {
+public class ClientAddPublicKeyPacket extends Packet {
 
-    private long userID;
     private String publicKey;
 
     @Override
     public void read(final PacketInputStream inputStream) throws IOException {
-        this.userID = inputStream.readLong();
         this.publicKey = inputStream.readUTF();
     }
 
     @Override
-    public void write(final PacketOutputStream outputStream) throws IOException {
-
-    }
+    public void write(final PacketOutputStream outputStream) {}
 }
