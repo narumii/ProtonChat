@@ -12,13 +12,13 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.security.KeyPair;
 import java.security.PublicKey;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 public class Client {
 
-    private final Map<String, PublicKey> keys = new HashMap<>();
+    private final Map<String, PublicKey> keys = new ConcurrentHashMap<>();
     private final String userName;
     private final ByteBuffer buffer = ByteBuffer.allocate(4096);
     private final PacketHandler packetHandler = new ClientPacketHandler();

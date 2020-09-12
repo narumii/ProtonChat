@@ -18,7 +18,6 @@ public class ClientPacketHandler implements PacketHandler {
         final Client client = ProtonClient.INSTANCE.getClient();
         if (packet instanceof ServerRequestHandshakePacket) {
             client.sendPacket(new ClientHandshakePacket(client.getUserName()));
-
             client.sendPacket(new ClientRequestKeyPacket());
             client.sendPacket(new ClientResponseKeyPacket(client.getUserName(), CryptographyHelper.generateStringFromPublicKey(client.getKeyPair().getPublic())));
         }else if (packet instanceof ServerDisconnectPacket) {
