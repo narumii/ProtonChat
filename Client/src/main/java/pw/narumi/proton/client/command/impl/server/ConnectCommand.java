@@ -22,7 +22,7 @@ public class ConnectCommand extends Command {
 
         try {
             ProtonClient.INSTANCE.initializeConnection(ip, port);
-        }catch (final Exception e) {
+        } catch (final Exception e) {
             throw new CommandException(e.getMessage());
         }
     }

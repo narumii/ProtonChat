@@ -7,9 +7,9 @@ import java.util.Scanner;
 public class Bootstrap {
 
     private static String prefix = "Gimme your name: ";
+
     public static void main(final String... args) {
         final Scanner scanner = new Scanner(System.in);
-
         while (true) {
             System.out.print(prefix);
             final String string = scanner.nextLine();
@@ -18,12 +18,9 @@ public class Bootstrap {
                 prefix = "> ";
                 continue;
             }
+
             ProtonClient.INSTANCE.getCommandManager().handleCommand(string);
         }
-    }
-
-    public static String getPrefix() {
-        return prefix;
     }
 
     public static void setPrefix(final String prefix) {

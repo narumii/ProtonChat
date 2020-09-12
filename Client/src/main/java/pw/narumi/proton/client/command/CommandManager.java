@@ -1,14 +1,10 @@
 package pw.narumi.proton.client.command;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import pw.narumi.proton.client.ProtonClient;
-import pw.narumi.proton.client.client.Client;
 import pw.narumi.proton.client.command.exception.CommandException;
 import pw.narumi.proton.client.command.exception.CommandUsageException;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,7 +25,7 @@ public class CommandManager {
                 final String[] commandArgs = new String[args.length - 1];
                 System.arraycopy(args, 1, commandArgs, 0, args.length - 1);
                 command.get().invoke(ProtonClient.INSTANCE.getClient(), commandArgs);
-            }catch (final CommandException exception) {
+            } catch (final CommandException exception) {
                 if (exception instanceof CommandUsageException)
                     System.err.println("Usage: " + exception.getMessage());
                 else

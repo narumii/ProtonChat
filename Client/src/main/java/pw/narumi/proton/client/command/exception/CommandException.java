@@ -2,10 +2,6 @@ package pw.narumi.proton.client.command.exception;
 
 public class CommandException extends RuntimeException {
 
-    public CommandException() {
-        super();
-    }
-
     public CommandException(final String message) {
         super(message);
     }

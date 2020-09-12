@@ -16,20 +16,19 @@ import java.nio.channels.SocketChannel;
 @Getter @Setter
 public class Client {
 
+    private final String userName;
     private PacketHandler packetHandler;
     private SocketChannel channel;
-    private Selector selector;
-    private final String userName;
 
     public Client(final String userName) {
         this.userName = userName;
-    }
-
-    public void onPacketReceived(final Packet packet) {
-
+        this.packetHandler = new ClientPacketHandler();
     }
 
     public void sendPacket(final Packet packet) {
+        if (this.channel == null)
+            return;
+
         final int packetID = ProtonClient.INSTANCE.getOutgoingPacketRegistry().getPacketID(packet.getClass());
         if (packetID == -1)
             return;
@@ -47,6 +46,9 @@ public class Client {
     }
 
     public void close() {
+        if (this.channel == null)
+            return;
+
         try {
             this.channel.close();
         } catch (IOException ex) {

@@ -1,11 +1,18 @@
 package pw.narumi.proton.client;
 
 import lombok.Getter;
+import lombok.Setter;
 import pw.narumi.proton.client.client.Client;
 import pw.narumi.proton.client.command.CommandManager;
 import pw.narumi.proton.client.command.impl.server.ConnectCommand;
-import pw.narumi.proton.client.packet.incoming.*;
-import pw.narumi.proton.client.packet.outgoing.*;
+import pw.narumi.proton.client.packet.incoming.AddPublicKeyPacket;
+import pw.narumi.proton.client.packet.incoming.DisconnectPacket;
+import pw.narumi.proton.client.packet.incoming.ResponseMessagePacket;
+import pw.narumi.proton.client.packet.incoming.ServerChatPacket;
+import pw.narumi.proton.client.packet.outgoing.ClientAddPublicKeyPacket;
+import pw.narumi.proton.client.packet.outgoing.ClientChatPacket;
+import pw.narumi.proton.client.packet.outgoing.ClientCommandPacket;
+import pw.narumi.proton.client.packet.outgoing.ConnectUserPacket;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketRegistry;
 
@@ -21,6 +28,7 @@ import java.util.Iterator;
 
 @Getter
 public enum ProtonClient {
+
     INSTANCE;
 
     private final CommandManager commandManager;
@@ -31,11 +39,9 @@ public enum ProtonClient {
         this.commandManager = new CommandManager();
         this.incomingPacketRegistry = new PacketRegistry(false);
         this.outgoingPacketRegistry = new PacketRegistry(true);
-
         this.commandManager.registerCommands(
                 new ConnectCommand("connect", "connect <ip> <port>")
         );
-
         this.outgoingPacketRegistry.registerPackets(
                 ClientAddPublicKeyPacket.class,
                 ClientChatPacket.class,
@@ -50,13 +56,8 @@ public enum ProtonClient {
         );
     }
 
+    @Setter
     private Client client;
-
-    public void setClient(final Client client) {
-        this.client = client;
-        System.out.println("You logged as: " + client.getUserName());
-    }
-
     private SocketChannel socketChannel;
     private Selector selector;
 
@@ -67,7 +68,6 @@ public enum ProtonClient {
         this.socketChannel.configureBlocking(false);
         this.socketChannel.register(this.selector, SelectionKey.OP_READ);
         client.setChannel(this.socketChannel);
-        client.setSelector(this.selector);
         System.out.println("Connected to server: " + this.socketChannel.getRemoteAddress());
         Bootstrap.setPrefix(client.getUserName() + ": ");
 
@@ -79,18 +79,17 @@ public enum ProtonClient {
                     while (iterator.hasNext()) {
                         final SelectionKey key = iterator.next();
                         iterator.remove();
-                        if (key.isReadable()) {
+                        if (key.isReadable())
                             read();
-                        }
                     }
                 }
             } catch (final IOException ex) {
                 ex.printStackTrace();
             }
+
             throw new ThreadDeath();
         }).start();
     }
-
 
     private void read() {
         try {

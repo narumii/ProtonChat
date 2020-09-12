@@ -72,11 +72,10 @@ public enum ProtonServer {
                         final SelectionKey key = iterator.next();
                         iterator.remove();
 
-                        if (key.isAcceptable()) {
+                        if (key.isAcceptable())
                             accept(key);
-                        } else if (key.isReadable()) {
+                        else if (key.isReadable())
                             read(key);
-                        }
                     }
                 }
             } catch (final IOException ex) {
@@ -99,7 +98,7 @@ public enum ProtonServer {
     private void accept(final SelectionKey key) throws IOException {
         final SocketChannel channel = ((ServerSocketChannel) key.channel()).accept();
         channel.configureBlocking(false);
-        channel.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+        channel.register(this.selector, SelectionKey.OP_READ);
         this.clientManager.addClient(new Client(channel));
     }
 
