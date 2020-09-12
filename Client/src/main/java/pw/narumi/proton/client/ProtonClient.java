@@ -100,6 +100,7 @@ public enum ProtonClient {
             buffer.clear();
             if (this.client.getChannel().read(buffer) == -1) {
                 this.client.close();
+                Bootstrap.setPrefix("$purple$> $r$");
                 return;
             }
 
@@ -111,14 +112,10 @@ public enum ProtonClient {
                 }
             }
         } catch (final IOException ex) {
-            handleDisconnect(ex);
+            System.out.println();
+            ex.printStackTrace();
+            Bootstrap.setPrefix("$purple$> $r$");
             this.client.close();
         }
-    }
-
-    private void handleDisconnect(final Exception e) {
-        System.out.println();
-        e.printStackTrace();
-        Bootstrap.setPrefix("$purple$> $r$");
     }
  }
