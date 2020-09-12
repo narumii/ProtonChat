@@ -1,7 +1,8 @@
 # ProtonChat
-Chat z szyfrowaniem asymetrycznym rsa/sha256 oraz szyfrowaniem end-to-end
+IRC With Asymetric (RSA) encryption and end-to-end encryption
 
 ## TODO:
-- Zrobic Serwer
-- Przepisac na Nio Sockety
-- Poprawic bledy
+- Fix messages
+- Add roms
+- Add commands
+- Yiff the fucking Fox!
