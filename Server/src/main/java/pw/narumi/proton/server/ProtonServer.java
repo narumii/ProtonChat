@@ -77,11 +77,11 @@ public enum ProtonServer {
                         }
                     }
                 }
-
-                throw new ThreadDeath();
             } catch (final IOException ex) {
                 ex.printStackTrace();
             }
+
+            throw new ThreadDeath();
         }).start();
     }
 
