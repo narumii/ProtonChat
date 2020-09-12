@@ -109,6 +109,7 @@ public enum ProtonServer {
                 ((Buffer) buffer).clear();
                 if (client.getChannel().read(buffer) == -1) {
                     System.out.println(String.format("User disconnected: [%s]", client.getUsername()));
+                    this.clientManager.sendPacket(new ServerResponseMessagePacket(String.format("User disconnected: [%s]", client.getUsername())));
                     this.clientManager.removeClient(client);
                     client.close();
                     return;
@@ -123,6 +124,7 @@ public enum ProtonServer {
                 }
             } catch (final IOException ex) {
                 System.out.println(String.format("User disconnected: [%s]", client.getUsername()));
+                this.clientManager.sendPacket(new ServerResponseMessagePacket(String.format("User disconnected: [%s]", client.getUsername())));
                 this.clientManager.removeClient(client);
                 client.close();
             }

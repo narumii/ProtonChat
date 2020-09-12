@@ -68,7 +68,8 @@ public enum ProtonClient {
         socketChannel.connect(new InetSocketAddress(ip, port));
         socketChannel.configureBlocking(false);
         socketChannel.register(selector, SelectionKey.OP_READ);
-        Bootstrap.LOGGER.info(ChatColor.GREEN + "Connected to: " + ChatColor.RESET + socketChannel.getRemoteAddress() + "\n\n");
+        Bootstrap.LOGGER.info(ChatColor.DARK_GREEN + "Connected to: " + ChatColor.GREEN + socketChannel.getRemoteAddress() + "\n\n");
+        System.out.print("");
         Bootstrap.setPrefix(this.client.getUserName() + ": ");
         this.client.setChannel(socketChannel);
         //connectAction.run();

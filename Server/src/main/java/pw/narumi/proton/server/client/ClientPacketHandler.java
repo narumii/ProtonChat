@@ -24,6 +24,7 @@ public class ClientPacketHandler implements PacketHandler {
                 this.client.setLogged(true);
                 this.client.sendPacket(new ServerRequestKeyPacket());
                 System.out.println(String.format("New user connected: [%s]", handshakePacket.getUserName()));
+                ProtonServer.INSTANCE.getClientManager().sendPacket(new ServerResponseMessagePacket(String.format("New user connected: [%s]", handshakePacket.getUserName())));
             } else {
                 this.client.sendPacket(new ServerResponseMessagePacket("Yeah yeah XD"));
                 this.client.close();
