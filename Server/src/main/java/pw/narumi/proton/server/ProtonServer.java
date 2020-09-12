@@ -11,10 +11,11 @@ import pw.narumi.proton.server.packet.outgoing.AddPublicKeyPacket;
 import pw.narumi.proton.server.packet.outgoing.DisconnectPacket;
 import pw.narumi.proton.server.packet.outgoing.ResponseMessagePacket;
 import pw.narumi.proton.server.packet.outgoing.ServerChatPacket;
-import pw.narumi.proton.shared.io.PacketInputStream;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketRegistry;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -26,7 +27,7 @@ import java.util.Iterator;
 
 @Getter
 public enum ProtonServer {
-    
+
     INSTANCE;
 
     private final ClientManager clientManager;
@@ -112,8 +113,8 @@ public enum ProtonServer {
                     return;
                 }
 
-                try (final PacketInputStream inputStream = new PacketInputStream(byteBuffer.array())) {
-                    final Packet packet = this.incomingPacketRegistry.createPacket(inputStream.readVarInt());
+                try (final DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(byteBuffer.array()))) {
+                    final Packet packet = this.incomingPacketRegistry.createPacket(inputStream.readByte());
                     if (packet != null) {
                         packet.read(inputStream);
                         packet.handle(client.getPacketHandler());
