@@ -18,10 +18,11 @@ public class ClientPacketHandler implements PacketHandler {
         final Client client = ProtonClient.INSTANCE.getClient();
         if (packet instanceof ServerRequestHandshakePacket) {
             client.sendPacket(new ClientHandshakePacket(client.getUserName()));
+
             client.sendPacket(new ClientRequestKeyPacket());
             client.sendPacket(new ClientResponseKeyPacket(client.getUserName(), CryptographyHelper.generateStringFromPublicKey(client.getKeyPair().getPublic())));
         }else if (packet instanceof ServerDisconnectPacket) {
-            Bootstrap.LOGGER.info(ChatColor.RED + "Disconnected: " + ChatColor.RESET + ((ServerResponseMessagePacket) packet).getMessage());
+            Bootstrap.LOGGER.info(ChatColor.RED + "Disconnected: " + ChatColor.RESET + ((ServerDisconnectPacket) packet).getMessage());
             client.close();
         } else if (packet instanceof ServerResponseMessagePacket) {
             Bootstrap.LOGGER.info(ChatColor.RED + "Message: " + ChatColor.RESET + ((ServerResponseMessagePacket) packet).getMessage());
@@ -34,7 +35,7 @@ public class ClientPacketHandler implements PacketHandler {
                 client.sendPacket(new ClientResponseKeyPacket(client.getUserName(), CryptographyHelper.generateStringFromPublicKey(client.getKeyPair().getPublic())));
             } else if (packet instanceof ServerChatPacket) {
                 final ServerChatPacket chatPacket = (ServerChatPacket) packet;
-                Bootstrap.LOGGER.info(String.format(ChatColor.DARK_PURPLE + "%s: " + ChatColor.RESET + " %s", chatPacket.getUser(), CryptographyHelper.decodeMessage(chatPacket.getMessage(), client.getKeyPair().getPrivate())));
+                Bootstrap.LOGGER.info(String.format(ChatColor.DARK_PURPLE + "%s: " + ChatColor.RESET + "%s", chatPacket.getUser(), CryptographyHelper.decodeMessage(chatPacket.getMessage(), client.getKeyPair().getPrivate())));
             }
         }
     }

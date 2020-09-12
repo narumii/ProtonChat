@@ -35,6 +35,9 @@ public class Client {
     }
 
     public void sendPacket(final Packet packet) {
+        if (this.channel == null || !this.channel.isOpen())
+            return;
+
         final int packetID = ProtonServer.INSTANCE.getOutgoingPacketRegistry().getPacketID(packet.getClass());
         if (packetID == -1)
             return;
