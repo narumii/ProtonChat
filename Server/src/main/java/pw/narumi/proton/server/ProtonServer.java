@@ -10,6 +10,7 @@ import pw.narumi.proton.server.packet.incoming.ConnectUserPacket;
 import pw.narumi.proton.server.packet.outgoing.AddPublicKeyPacket;
 import pw.narumi.proton.server.packet.outgoing.DisconnectPacket;
 import pw.narumi.proton.server.packet.outgoing.ResponseMessagePacket;
+import pw.narumi.proton.server.packet.outgoing.ServerChatPacket;
 import pw.narumi.proton.shared.io.PacketInputStream;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketRegistry;
@@ -45,7 +46,8 @@ public enum ProtonServer {
         this.outgoingPacketRegistry.registerPackets(
                 AddPublicKeyPacket.class,
                 DisconnectPacket.class,
-                ResponseMessagePacket.class
+                ResponseMessagePacket.class,
+                ServerChatPacket.class
         );
     }
 
@@ -76,11 +78,11 @@ public enum ProtonServer {
                         }
                     }
                 }
-
-                throw new ThreadDeath();
             } catch (final IOException ex) {
                 ex.printStackTrace();
             }
+
+            throw new ThreadDeath();
         }).start();
     }
 

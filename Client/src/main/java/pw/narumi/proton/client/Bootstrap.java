@@ -1,16 +1,32 @@
 package pw.narumi.proton.client;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.channels.SocketChannel;
+import pw.narumi.proton.client.client.Client;
 
-public final class Bootstrap {
+import java.util.Scanner;
 
-    public static void main(final String... args) throws IOException {
-        final SocketChannel socketChannel = SocketChannel.open();
-        socketChannel.connect(new InetSocketAddress("127.0.0.1", 1918));
-        socketChannel.configureBlocking(false);
+public class Bootstrap {
 
-        //TODO: ADD MESSAGE/COMMAND/CONNECT HANDLERS
+    private static String prefix = "Gimme your name: ";
+    public static void main(final String... args) {
+        final Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.print(prefix);
+            final String string = scanner.nextLine();
+            if (ProtonClient.INSTANCE.getClient() == null) {
+                ProtonClient.INSTANCE.setClient(new Client((string.contains(" ") ? string.split(" ")[0] : string)));
+                prefix = "> ";
+                continue;
+            }
+            ProtonClient.INSTANCE.getCommandManager().handleCommand(string);
+        }
+    }
+
+    public static String getPrefix() {
+        return prefix;
+    }
+
+    public static void setPrefix(final String prefix) {
+        Bootstrap.prefix = prefix;
     }
 }

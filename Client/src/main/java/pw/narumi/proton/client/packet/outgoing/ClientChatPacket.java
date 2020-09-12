@@ -1,0 +1,24 @@
+package pw.narumi.proton.client.packet.outgoing;
+
+import lombok.Getter;
+import pw.narumi.proton.shared.io.PacketInputStream;
+import pw.narumi.proton.shared.io.PacketOutputStream;
+import pw.narumi.proton.shared.packet.Packet;
+
+import java.io.IOException;
+
+@Getter
+public class ClientChatPacket extends Packet {
+
+    private String toUser;
+    private String message;
+
+    @Override
+    public void read(final PacketInputStream inputStream) throws IOException {
+        this.toUser = inputStream.readUTF();
+        this.message = inputStream.readUTF();
+    }
+
+    @Override
+    public void write(final PacketOutputStream outputStream) {}
+}
