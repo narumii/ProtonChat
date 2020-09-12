@@ -16,8 +16,8 @@ public class ClientResponseKeyPacket extends Packet {
 
     @Override
     public void read(final DataInputStream inputStream) throws IOException {
-        this.userName = dataInputStream.readUTF();
-        this.publicKey = dataInputStream.readUTF();
+        this.userName = inputStream.readUTF();
+        this.publicKey = inputStream.readUTF();
     }
 
     @Override

@@ -21,7 +21,7 @@ public class ClientResponseKeyPacket extends Packet {
 
     @Override
     public void write(final DataOutputStream outputStream) throws IOException {
-        dataOutputStream.writeUTF(userName);
-        dataOutputStream.writeUTF(publicKey);
+        outputStream.writeUTF(userName);
+        outputStream.writeUTF(publicKey);
     }
 }

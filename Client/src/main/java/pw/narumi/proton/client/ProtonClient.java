@@ -4,11 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import pw.narumi.proton.client.client.Client;
 import pw.narumi.proton.client.command.CommandManager;
+import pw.narumi.proton.client.command.impl.ExitCommand;
 import pw.narumi.proton.client.command.impl.key.GeneratePublicKeyCommand;
 import pw.narumi.proton.client.command.impl.server.ConnectCommand;
+import pw.narumi.proton.client.logger.ChatColor;
 import pw.narumi.proton.client.packet.incoming.*;
 import pw.narumi.proton.client.packet.outgoing.*;
-import pw.narumi.proton.shared.logger.Logger;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketRegistry;
 
@@ -37,7 +38,8 @@ public enum ProtonClient {
         this.outgoingPacketRegistry = new PacketRegistry(true);
         this.commandManager.registerCommands(
                 new ConnectCommand("connect", "connect <ip> <port>"),
-                new GeneratePublicKeyCommand("generateKey", null)
+                new GeneratePublicKeyCommand("generateKey", null),
+                new ExitCommand("exit", null)
         );
 
         this.outgoingPacketRegistry.registerPackets(
@@ -60,16 +62,16 @@ public enum ProtonClient {
     @Setter
     private Client client;
 
-    public void initializeConnection(final String ip, final int port, final Runnable connectAction) throws IOException {
+    public void initializeConnection(final String ip, final int port/*, final Runnable connectAction*/) throws IOException {
         final Selector selector = Selector.open();
         final SocketChannel socketChannel = SocketChannel.open();
         socketChannel.connect(new InetSocketAddress(ip, port));
         socketChannel.configureBlocking(false);
         socketChannel.register(selector, SelectionKey.OP_READ);
-        Bootstrap.LOGGER.info("$green$Connected to server: $r$" + socketChannel.getRemoteAddress() + "\n");
-        Bootstrap.setPrefix(Logger.PURPLE + this.client.getUserName() + Logger.PURPLE_BRIGHT + ": " + Logger.RESET);
+        Bootstrap.LOGGER.info(ChatColor.GREEN + "Connected to: " + ChatColor.RESET + socketChannel.getRemoteAddress() + "\n\n");
+        Bootstrap.setPrefix(this.client.getUserName() + ": ");
         this.client.setChannel(socketChannel);
-        connectAction.run();
+        //connectAction.run();
 
         new Thread(() -> {
             try {
@@ -98,7 +100,7 @@ public enum ProtonClient {
             buffer.clear();
             if (this.client.getChannel().read(buffer) == -1) {
                 this.client.close();
-                Bootstrap.setPrefix("$purple$> $r$");
+                Bootstrap.setPrefix("> ");
                 return;
             }
 
@@ -112,7 +114,7 @@ public enum ProtonClient {
         } catch (final IOException ex) {
             System.out.println();
             ex.printStackTrace();
-            Bootstrap.setPrefix("$purple$> $r$");
+            Bootstrap.setPrefix("> ");
             this.client.close();
         }
     }

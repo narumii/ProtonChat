@@ -5,6 +5,8 @@ import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public class CryptographyHelper {
@@ -12,7 +14,7 @@ public class CryptographyHelper {
     public static PublicKey generatePUblicKeyFromString(final String string) {
         try {
             final byte[] key = Base64.getDecoder().decode(string.getBytes());
-            final PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(key);
+            final X509EncodedKeySpec keySpec = new X509EncodedKeySpec(key);
             final KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             return keyFactory.generatePublic(keySpec);
         }catch (final Exception e) {
@@ -23,7 +25,7 @@ public class CryptographyHelper {
 
     public static String generateStringFromPublicKey(final PublicKey publicKey) {
         try {
-            Base64.getEncoder().encodeToString(publicKey.getEncoded());
+            return Base64.getEncoder().encodeToString(publicKey.getEncoded());
         }catch (final Exception e) {
             e.printStackTrace();
         }

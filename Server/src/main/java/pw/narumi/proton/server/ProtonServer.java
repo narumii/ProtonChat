@@ -12,11 +12,13 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.Arrays;
 import java.util.Iterator;
 
 @Getter
@@ -76,7 +78,6 @@ public enum ProtonServer {
                     }
                 }
             } catch (final IOException ex) {
-                ex.printStackTrace();
             }
 
             throw new ThreadDeath();
@@ -105,8 +106,9 @@ public enum ProtonServer {
         this.clientManager.findClient((SocketChannel) key.channel()).ifPresent(client -> {
             try {
                 final ByteBuffer buffer = client.getBuffer();
-                buffer.clear();
+                ((Buffer) buffer).clear();
                 if (client.getChannel().read(buffer) == -1) {
+                    System.out.println(String.format("User disconnected: [%s]", client.getUsername()));
                     this.clientManager.removeClient(client);
                     client.close();
                     return;
@@ -120,9 +122,9 @@ public enum ProtonServer {
                     }
                 }
             } catch (final IOException ex) {
+                System.out.println(String.format("User disconnected: [%s]", client.getUsername()));
                 this.clientManager.removeClient(client);
                 client.close();
-                ex.printStackTrace();
             }
         });
     }

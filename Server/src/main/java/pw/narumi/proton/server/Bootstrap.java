@@ -19,7 +19,7 @@ public final class Bootstrap {
             System.err.println("Invalid port, setting default port value. (1918)");
         }
 
-        ProtonServer.INSTANCE.initializeServer("127.0.0.1", port);
+        ProtonServer.INSTANCE.initializeServer("0.0.0.0", port);
         Runtime.getRuntime().addShutdownHook(new Thread(ProtonServer.INSTANCE::closeServer));
     }
 }

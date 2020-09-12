@@ -24,7 +24,6 @@ public class Client {
 
     public void requestLogin() {
         sendPacket(new ServerRequestHandshakePacket());
-        sendPacket(new ServerRequestKeyPacket());
     }
 
     public void close() {

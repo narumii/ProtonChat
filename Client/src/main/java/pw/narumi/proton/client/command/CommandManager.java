@@ -4,6 +4,7 @@ import pw.narumi.proton.client.Bootstrap;
 import pw.narumi.proton.client.ProtonClient;
 import pw.narumi.proton.client.command.exception.CommandException;
 import pw.narumi.proton.client.command.exception.CommandUsageException;
+import pw.narumi.proton.client.logger.ChatColor;
 import pw.narumi.proton.client.packet.outgoing.ClientChatPacket;
 import pw.narumi.proton.shared.cryptography.CryptographyHelper;
 
@@ -32,13 +33,13 @@ public class CommandManager {
                     command.get().invoke(ProtonClient.INSTANCE.getClient(), commandArgs);
                 } catch (final CommandException exception) {
                     if (exception instanceof CommandUsageException)
-                        Bootstrap.LOGGER.info("$red$Usage: $r$" + exception.getMessage());
+                        Bootstrap.LOGGER.info(ChatColor.RED + "Usage: " + ChatColor.YELLOW + exception.getMessage());
                     else
-                        Bootstrap.LOGGER.info(String.format("$red$Error processing command $yellow$\"%s\"$r$: %s", commandAlias.toUpperCase(), exception.getMessage()));
+                        Bootstrap.LOGGER.info(String.format(ChatColor.RED + "Error processing command " + ChatColor.YELLOW + "\"%s\": " + ChatColor.RESET + "%s", commandAlias.toUpperCase(), exception.getMessage()));
                 }
                 return;
             }
-            Bootstrap.LOGGER.info(String.format("$red$Command $yellow$\"%s\" $red$not found, use command $yellow$\"help\" $red$to check command list.", commandAlias.toUpperCase()));
+            Bootstrap.LOGGER.info(String.format(ChatColor.RED + "Command " + ChatColor.YELLOW + "\"%s\" " + ChatColor.RED + "not found, use command " + ChatColor.YELLOW + "\"help\" " + ChatColor.RED + "to check command list.", commandAlias.toUpperCase()));
         }else if (ProtonClient.INSTANCE.getClient().getChannel() != null && !string.startsWith("/")) {
             ProtonClient.INSTANCE.getClient().getKeys().forEach((userName, key)
                     -> ProtonClient.INSTANCE.getClient().sendPacket(new ClientChatPacket(userName, CryptographyHelper.encodeMessage(string, key))));
