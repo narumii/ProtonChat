@@ -37,8 +37,6 @@ public enum ProtonClient {
     private final PacketRegistry incomingPacketRegistry;
     private final PacketRegistry outgoingPacketRegistry;
 
-    private final ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
-
     ProtonClient() {
         this.commandManager = new CommandManager();
         this.incomingPacketRegistry = new PacketRegistry(false);
@@ -63,25 +61,23 @@ public enum ProtonClient {
 
     @Setter
     private Client client;
-    private SocketChannel socketChannel;
-    private Selector selector;
 
     public void initializeConnection(final String ip, final int port, final Runnable connectAction) throws IOException {
-        this.selector = Selector.open();
-        this.socketChannel = SocketChannel.open();
-        this.socketChannel.connect(new InetSocketAddress(ip, port));
-        this.socketChannel.configureBlocking(false);
-        this.socketChannel.register(this.selector, SelectionKey.OP_READ);
-        this.client.setChannel(this.socketChannel);
-        Bootstrap.LOGGER.info("$green$Connected to server: $r$" + this.socketChannel.getRemoteAddress() + "\n");
+        final Selector selector = Selector.open();
+        final SocketChannel socketChannel = SocketChannel.open();
+        socketChannel.connect(new InetSocketAddress(ip, port));
+        socketChannel.configureBlocking(false);
+        socketChannel.register(selector, SelectionKey.OP_READ);
+        Bootstrap.LOGGER.info("$green$Connected to server: $r$" + socketChannel.getRemoteAddress() + "\n");
         Bootstrap.setPrefix(Logger.PURPLE + this.client.getUserName() + Logger.PURPLE_BRIGHT + ": " + Logger.RESET);
         connectAction.run();
+        this.client.setChannel(socketChannel);
 
         new Thread(() -> {
             try {
-                while (this.selector.isOpen() && this.socketChannel.isOpen()) {
-                    this.selector.select();
-                    final Iterator<SelectionKey> iterator = this.selector.selectedKeys().iterator();
+                while (this.client.getChannel().isOpen()) {
+                    selector.select();
+                    final Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
                     while (iterator.hasNext()) {
                         final SelectionKey key = iterator.next();
                         iterator.remove();
@@ -100,13 +96,14 @@ public enum ProtonClient {
 
     private void read() {
         try {
-            byteBuffer.clear();
-            if (this.client.getChannel().read(byteBuffer) == -1) {
+            final ByteBuffer buffer = this.client.getBuffer();
+            buffer.clear();
+            if (this.client.getChannel().read(buffer) == -1) {
                 this.client.close();
                 return;
             }
 
-            try (final DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(byteBuffer.array()))) {
+            try (final DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(buffer.array()))) {
                 final Packet packet = this.incomingPacketRegistry.createPacket(inputStream.readByte());
                 if (packet != null) {
                     packet.read(inputStream);

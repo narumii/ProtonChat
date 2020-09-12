@@ -34,8 +34,6 @@ public enum ProtonServer {
     private final PacketRegistry incomingPacketRegistry;
     private final PacketRegistry outgoingPacketRegistry;
 
-    private final ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
-
     ProtonServer() {
         this.clientManager = new ClientManager();
         this.incomingPacketRegistry = new PacketRegistry(false);
@@ -67,7 +65,7 @@ public enum ProtonServer {
 
         new Thread(() -> {
             try {
-                while (this.selector.isOpen() && this.socketChannel.isOpen()) {
+                while (this.socketChannel.isOpen()) {
                     this.selector.select();
                     final Iterator<SelectionKey> iterator = this.selector.selectedKeys().iterator();
                     while (iterator.hasNext()) {
@@ -90,7 +88,6 @@ public enum ProtonServer {
 
     public void closeServer() {
         try {
-            this.selector.close();
             this.socketChannel.close();
         } catch (final IOException ex) {
             ex.printStackTrace();
@@ -107,14 +104,15 @@ public enum ProtonServer {
     private void read(final SelectionKey key) {
         this.clientManager.findClient((SocketChannel) key.channel()).ifPresent(client -> {
             try {
-                byteBuffer.clear();
-                if (client.getChannel().read(byteBuffer) == -1) {
+                final ByteBuffer buffer = client.getBuffer();
+                buffer.clear();
+                if (client.getChannel().read(buffer) == -1) {
                     this.clientManager.removeClient(client);
                     client.close();
                     return;
                 }
 
-                try (final DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(byteBuffer.array()))) {
+                try (final DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(buffer.array()))) {
                     final Packet packet = this.incomingPacketRegistry.createPacket(inputStream.readByte());
                     if (packet != null) {
                         packet.read(inputStream);

@@ -20,6 +20,7 @@ public class Client {
 
     private final Map<String, PublicKey> keys = new HashMap<>();
     private final String userName;
+    private final ByteBuffer buffer = ByteBuffer.allocate(4096);
     private final PacketHandler packetHandler = new ClientPacketHandler();
     private SocketChannel channel;
     private KeyPair keyPair;

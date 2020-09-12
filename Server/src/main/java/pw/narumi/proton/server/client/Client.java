@@ -1,8 +1,6 @@
 package pw.narumi.proton.server.client;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import pw.narumi.proton.server.ProtonServer;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketHandler;
@@ -17,6 +15,7 @@ import java.nio.channels.SocketChannel;
 public class Client {
 
     private final SocketChannel channel;
+    private final ByteBuffer buffer = ByteBuffer.allocate(4096);
     private final PacketHandler packetHandler = new ClientPacketHandler(this);
     private String username;
     private boolean logged;

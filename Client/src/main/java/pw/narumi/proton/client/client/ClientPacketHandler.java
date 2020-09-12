@@ -12,10 +12,9 @@ import pw.narumi.proton.shared.packet.PacketHandler;
 
 public class ClientPacketHandler implements PacketHandler {
 
-    protected Client client = ProtonClient.INSTANCE.getClient();
-
     @Override
     public void packetReceived(final Packet packet) {
+        final Client client = ProtonClient.INSTANCE.getClient();
         if (packet instanceof DisconnectPacket) {
             Bootstrap.LOGGER.info("$red$Disconnected: $r$" + ((DisconnectPacket) packet).getMessage());
             client.close();

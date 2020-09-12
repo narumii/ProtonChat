@@ -14,8 +14,7 @@ public class CryptographyHelper {
             final byte[] key = Base64.getDecoder().decode(string.getBytes());
             final PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(key);
             final KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            final PublicKey publicKey = keyFactory.generatePublic(keySpec);
-            return publicKey;
+            return keyFactory.generatePublic(keySpec);
         }catch (final Exception e) {
             e.printStackTrace();
         }
