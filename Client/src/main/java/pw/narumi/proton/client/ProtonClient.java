@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pw.narumi.proton.client.client.Client;
 import pw.narumi.proton.client.command.CommandManager;
+import pw.narumi.proton.client.command.impl.key.GeneratePublicKeyCommand;
 import pw.narumi.proton.client.command.impl.server.ConnectCommand;
 import pw.narumi.proton.client.packet.incoming.AddPublicKeyPacket;
 import pw.narumi.proton.client.packet.incoming.DisconnectPacket;
@@ -13,6 +14,7 @@ import pw.narumi.proton.client.packet.outgoing.ClientAddPublicKeyPacket;
 import pw.narumi.proton.client.packet.outgoing.ClientChatPacket;
 import pw.narumi.proton.client.packet.outgoing.ClientCommandPacket;
 import pw.narumi.proton.client.packet.outgoing.ConnectUserPacket;
+import pw.narumi.proton.logger.Logger;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketRegistry;
 
@@ -40,7 +42,8 @@ public enum ProtonClient {
         this.incomingPacketRegistry = new PacketRegistry(false);
         this.outgoingPacketRegistry = new PacketRegistry(true);
         this.commandManager.registerCommands(
-                new ConnectCommand("connect", "connect <ip> <port>")
+                new ConnectCommand("connect", "connect <ip> <port>"),
+                new GeneratePublicKeyCommand("generateKey", null)
         );
         this.outgoingPacketRegistry.registerPackets(
                 ClientAddPublicKeyPacket.class,
@@ -68,8 +71,8 @@ public enum ProtonClient {
         this.socketChannel.configureBlocking(false);
         this.socketChannel.register(this.selector, SelectionKey.OP_READ);
         client.setChannel(this.socketChannel);
-        System.out.println("Connected to server: " + this.socketChannel.getRemoteAddress());
-        Bootstrap.setPrefix(client.getUserName() + ": ");
+        Bootstrap.LOGGER.info("$green$Connected to server: $r$" + this.socketChannel.getRemoteAddress() + "\n");
+        Bootstrap.setPrefix(Logger.PURPLE + client.getUserName() + Logger.PURPLE_BRIGHT + ": " + Logger.RESET);
 
         new Thread(() -> {
             try {
@@ -84,6 +87,7 @@ public enum ProtonClient {
                     }
                 }
             } catch (final IOException ex) {
+                System.out.println();
                 ex.printStackTrace();
             }
 
@@ -107,8 +111,14 @@ public enum ProtonClient {
                 }
             }
         } catch (final IOException ex) {
+            handleDisconnect(ex);
             this.client.close();
-            ex.printStackTrace();
         }
     }
-}
+
+    private void handleDisconnect(final Exception e) {
+        System.out.println();
+        e.printStackTrace();
+        Bootstrap.setPrefix("$purple$> $r$");
+    }
+ }

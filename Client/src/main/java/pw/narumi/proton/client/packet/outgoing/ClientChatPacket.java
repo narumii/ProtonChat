@@ -1,5 +1,6 @@
 package pw.narumi.proton.client.packet.outgoing;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import pw.narumi.proton.shared.packet.Packet;
 
@@ -7,7 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-@Getter
+@Getter @AllArgsConstructor
 public class ClientChatPacket extends Packet {
 
     private String toUser;

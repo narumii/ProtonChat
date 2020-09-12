@@ -12,13 +12,20 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.security.KeyPair;
+import java.security.PublicKey;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter @Setter
 public class Client {
 
+    private final Map<String, PublicKey> userKeyMap = new HashMap<>();
+
     private final String userName;
     private PacketHandler packetHandler;
     private SocketChannel channel;
+    private KeyPair keyPair;
 
     public Client(final String userName) {
         this.userName = userName;
