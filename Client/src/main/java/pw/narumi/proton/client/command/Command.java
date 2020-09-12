@@ -1,11 +1,10 @@
 package pw.narumi.proton.client.command;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import pw.narumi.proton.client.client.Client;
 import pw.narumi.proton.client.command.exception.CommandException;
 
-@AllArgsConstructor @Getter
+@Data
 public abstract class Command {
 
     private final String name;

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class CommandManager {
 
-    private final Map<String, Command> commandMap = new HashMap<>();
+    private final Map<String, Command> commands = new HashMap<>();
 
     public void handleCommand(final String string) {
         if (string.isEmpty())
@@ -40,17 +40,17 @@ public class CommandManager {
             Bootstrap.LOGGER.info(String.format("$red$Command $yellow$\"%s\" $red$not found, use command $yellow$\"help\" $red$to check command list.", commandAlias.toUpperCase()));
         }else if (ProtonClient.INSTANCE.getClient().getChannel() != null && !string.startsWith("/")) {
             ProtonClient.INSTANCE.getClient().sendPacket(new ClientChatPacket("123", "123"));
-            ProtonClient.INSTANCE.getClient().getUserKeyMap().forEach((userName, key) -> ProtonClient.INSTANCE.getClient().sendPacket(new ClientChatPacket(userName, /*Encode*/string)));
+            ProtonClient.INSTANCE.getClient().getKeys().forEach((userName, key) -> ProtonClient.INSTANCE.getClient().sendPacket(new ClientChatPacket(userName, /*Encode*/string)));
         }
     }
 
     public void registerCommands(final Command... commands) {
         for (final Command command : commands) {
-            this.commandMap.put(command.getName().toLowerCase(), command);
+            this.commands.put(command.getName().toLowerCase(), command);
         }
     }
 
     private Optional<Command> getCommand(final String alias) {
-        return Optional.ofNullable(commandMap.get(alias.toLowerCase()));
+        return Optional.ofNullable(commands.get(alias.toLowerCase()));
     }
 }

@@ -1,6 +1,6 @@
 package pw.narumi.proton.server.client;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import pw.narumi.proton.server.ProtonServer;
 import pw.narumi.proton.server.packet.incoming.ClientAddPublicKeyPacket;
 import pw.narumi.proton.server.packet.incoming.ClientChatPacket;
@@ -12,7 +12,7 @@ import pw.narumi.proton.server.packet.outgoing.ServerChatPacket;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketHandler;
 
-@Data
+@AllArgsConstructor
 public class ClientPacketHandler implements PacketHandler {
 
     private final Client client;
