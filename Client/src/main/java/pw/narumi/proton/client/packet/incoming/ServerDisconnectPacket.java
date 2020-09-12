@@ -1,4 +1,4 @@
-package pw.narumi.proton.server.packet.incoming;
+package pw.narumi.proton.client.packet.incoming;
 
 import lombok.Getter;
 import pw.narumi.proton.shared.packet.Packet;
@@ -8,13 +8,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 @Getter
-public class ClientAddPublicKeyPacket extends Packet {
+public class ServerDisconnectPacket extends Packet {
 
-    private String publicKey;
+    private String message;
 
     @Override
     public void read(final DataInputStream inputStream) throws IOException {
-        this.publicKey = inputStream.readUTF();
+        this.message = inputStream.readUTF();
     }
 
     @Override

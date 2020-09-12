@@ -6,14 +6,8 @@ import pw.narumi.proton.client.client.Client;
 import pw.narumi.proton.client.command.CommandManager;
 import pw.narumi.proton.client.command.impl.key.GeneratePublicKeyCommand;
 import pw.narumi.proton.client.command.impl.server.ConnectCommand;
-import pw.narumi.proton.client.packet.incoming.AddPublicKeyPacket;
-import pw.narumi.proton.client.packet.incoming.DisconnectPacket;
-import pw.narumi.proton.client.packet.incoming.ResponseMessagePacket;
-import pw.narumi.proton.client.packet.incoming.ServerChatPacket;
-import pw.narumi.proton.client.packet.outgoing.ClientAddPublicKeyPacket;
-import pw.narumi.proton.client.packet.outgoing.ClientChatPacket;
-import pw.narumi.proton.client.packet.outgoing.ClientCommandPacket;
-import pw.narumi.proton.client.packet.outgoing.ConnectUserPacket;
+import pw.narumi.proton.client.packet.incoming.*;
+import pw.narumi.proton.client.packet.outgoing.*;
 import pw.narumi.proton.shared.logger.Logger;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketRegistry;
@@ -45,17 +39,21 @@ public enum ProtonClient {
                 new ConnectCommand("connect", "connect <ip> <port>"),
                 new GeneratePublicKeyCommand("generateKey", null)
         );
+
         this.outgoingPacketRegistry.registerPackets(
-                ClientAddPublicKeyPacket.class,
                 ClientChatPacket.class,
                 ClientCommandPacket.class,
-                ConnectUserPacket.class
+                ClientHandshakePacket.class,
+                ClientRequestKeyPacket.class,
+                ClientResponseKeyPacket.class
         );
         this.incomingPacketRegistry.registerPackets(
-                AddPublicKeyPacket.class,
-                DisconnectPacket.class,
-                ResponseMessagePacket.class,
-                ServerChatPacket.class
+                ServerChatPacket.class,
+                ServerDisconnectPacket.class,
+                ServerRequestHandshakePacket.class,
+                ServerRequestKeyPacket.class,
+                ServerResponseKeyPacket.class,
+                ServerResponseMessagePacket.class
         );
     }
 
@@ -70,8 +68,8 @@ public enum ProtonClient {
         socketChannel.register(selector, SelectionKey.OP_READ);
         Bootstrap.LOGGER.info("$green$Connected to server: $r$" + socketChannel.getRemoteAddress() + "\n");
         Bootstrap.setPrefix(Logger.PURPLE + this.client.getUserName() + Logger.PURPLE_BRIGHT + ": " + Logger.RESET);
-        connectAction.run();
         this.client.setChannel(socketChannel);
+        connectAction.run();
 
         new Thread(() -> {
             try {

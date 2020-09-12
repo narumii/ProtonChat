@@ -3,14 +3,8 @@ package pw.narumi.proton.server;
 import lombok.Getter;
 import pw.narumi.proton.server.client.Client;
 import pw.narumi.proton.server.client.ClientManager;
-import pw.narumi.proton.server.packet.incoming.ClientAddPublicKeyPacket;
-import pw.narumi.proton.server.packet.incoming.ClientChatPacket;
-import pw.narumi.proton.server.packet.incoming.ClientCommandPacket;
-import pw.narumi.proton.server.packet.incoming.ConnectUserPacket;
-import pw.narumi.proton.server.packet.outgoing.AddPublicKeyPacket;
-import pw.narumi.proton.server.packet.outgoing.DisconnectPacket;
-import pw.narumi.proton.server.packet.outgoing.ResponseMessagePacket;
-import pw.narumi.proton.server.packet.outgoing.ServerChatPacket;
+import pw.narumi.proton.server.packet.incoming.*;
+import pw.narumi.proton.server.packet.outgoing.*;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketRegistry;
 
@@ -39,16 +33,19 @@ public enum ProtonServer {
         this.incomingPacketRegistry = new PacketRegistry(false);
         this.outgoingPacketRegistry = new PacketRegistry(true);
         this.incomingPacketRegistry.registerPackets(
-                ClientAddPublicKeyPacket.class,
                 ClientChatPacket.class,
                 ClientCommandPacket.class,
-                ConnectUserPacket.class
+                ClientHandshakePacket.class,
+                ClientRequestKeyPacket.class,
+                ClientResponseKeyPacket.class
         );
         this.outgoingPacketRegistry.registerPackets(
-                AddPublicKeyPacket.class,
-                DisconnectPacket.class,
-                ResponseMessagePacket.class,
-                ServerChatPacket.class
+                ServerChatPacket.class,
+                ServerDisconnectPacket.class,
+                ServerRequestHandshakePacket.class,
+                ServerRequestKeyPacket.class,
+                ServerResponseKeyPacket.class,
+                ServerResponseMessagePacket.class
         );
     }
 
@@ -98,7 +95,10 @@ public enum ProtonServer {
         final SocketChannel channel = ((ServerSocketChannel) key.channel()).accept();
         channel.configureBlocking(false);
         channel.register(this.selector, SelectionKey.OP_READ);
-        this.clientManager.addClient(new Client(channel));
+
+        final Client client = new Client(channel);
+        client.requestLogin();
+        this.clientManager.addClient(client);
     }
 
     private void read(final SelectionKey key) {

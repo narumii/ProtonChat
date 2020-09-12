@@ -1,5 +1,6 @@
 package pw.narumi.proton.server.packet.incoming;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import pw.narumi.proton.shared.packet.Packet;
 
@@ -13,7 +14,7 @@ public class ClientCommandPacket extends Packet {
     private String command;
 
     @Override
-    public void read(final DataInputStream inputStream) throws IOException {
+    public void read(final DataInputStream inputStream) throws IOException{
         this.command = inputStream.readUTF();
     }
 

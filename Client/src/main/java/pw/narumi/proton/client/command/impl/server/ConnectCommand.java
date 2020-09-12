@@ -6,7 +6,7 @@ import pw.narumi.proton.client.command.Command;
 import pw.narumi.proton.client.command.exception.CommandException;
 import pw.narumi.proton.client.command.exception.CommandUsageException;
 import pw.narumi.proton.client.packet.outgoing.ClientAddPublicKeyPacket;
-import pw.narumi.proton.client.packet.outgoing.ConnectUserPacket;
+import pw.narumi.proton.client.packet.outgoing.ClientHandshakePacket;
 
 import java.util.Base64;
 
@@ -29,7 +29,7 @@ public class ConnectCommand extends Command {
 
         try {
             ProtonClient.INSTANCE.initializeConnection(ip, port, () -> {
-                client.sendPacket(new ConnectUserPacket(client.getUserName()));
+                client.sendPacket(new ClientHandshakePacket(client.getUserName()));
                 client.sendPacket(new ClientAddPublicKeyPacket(Base64.getEncoder().encodeToString(client.getKeyPair().getPublic().getEncoded())));
             });
         } catch (final Exception e) {

@@ -8,15 +8,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 @Getter
-public class AddPublicKeyPacket extends Packet {
+public class ServerResponseMessagePacket extends Packet {
 
-    private String userName;
-    private String publicKey;
+    private String message;
 
     @Override
     public void read(final DataInputStream inputStream) throws IOException {
-        this.userName = inputStream.readUTF();
-        this.publicKey = inputStream.readUTF();
+        this.message = inputStream.readUTF();
     }
 
     @Override

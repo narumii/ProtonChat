@@ -2,6 +2,8 @@ package pw.narumi.proton.server.client;
 
 import lombok.Data;
 import pw.narumi.proton.server.ProtonServer;
+import pw.narumi.proton.server.packet.outgoing.ServerRequestHandshakePacket;
+import pw.narumi.proton.server.packet.outgoing.ServerRequestKeyPacket;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketHandler;
 
@@ -19,6 +21,11 @@ public class Client {
     private final PacketHandler packetHandler = new ClientPacketHandler(this);
     private String username;
     private boolean logged;
+
+    public void requestLogin() {
+        sendPacket(new ServerRequestHandshakePacket());
+        sendPacket(new ServerRequestKeyPacket());
+    }
 
     public void close() {
         try {

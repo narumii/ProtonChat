@@ -9,17 +9,17 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 @AllArgsConstructor
-public class ServerChatPacket extends Packet {
+public class ServerResponseKeyPacket extends Packet {
 
-    private final String user;
-    private final String message;
+    private final String userName;
+    private final String publicKey;
 
     @Override
     public void read(final DataInputStream inputStream) {}
 
     @Override
     public void write(final DataOutputStream outputStream) throws IOException {
-        outputStream.writeUTF(this.user);
-        outputStream.writeUTF(this.message);
+        dataOutputStream.writeUTF(this.userName);
+        dataOutputStream.writeUTF(this.publicKey);
     }
 }

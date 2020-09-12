@@ -1,5 +1,6 @@
-package pw.narumi.proton.client.packet.incoming;
+package pw.narumi.proton.server.packet.incoming;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import pw.narumi.proton.shared.packet.Packet;
 
@@ -8,13 +9,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 @Getter
-public class DisconnectPacket extends Packet {
+public class ClientHandshakePacket extends Packet {
 
-    private String message;
+    private String userName;
 
     @Override
     public void read(final DataInputStream inputStream) throws IOException {
-        this.message = inputStream.readUTF();
+        this.userName = inputStream.readUTF();
     }
 
     @Override

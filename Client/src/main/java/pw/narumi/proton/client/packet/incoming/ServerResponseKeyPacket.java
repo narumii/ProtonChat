@@ -8,15 +8,19 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 @Getter
-public class ResponseMessagePacket extends Packet {
+public class ServerResponseKeyPacket extends Packet {
 
-    private String message;
+    private String userName;
+    private String publicKey;
 
     @Override
     public void read(final DataInputStream inputStream) throws IOException {
-        this.message = inputStream.readUTF();
+        this.userName = dataInputStream.readUTF();
+        this.publicKey = dataInputStream.readUTF();
     }
 
     @Override
-    public void write(final DataOutputStream outputStream) {}
+    public void write(final DataOutputStream outputStream) throws IOException {
+
+    }
 }
