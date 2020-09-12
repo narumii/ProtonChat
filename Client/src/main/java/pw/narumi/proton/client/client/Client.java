@@ -3,11 +3,13 @@ package pw.narumi.proton.client.client;
 import lombok.Getter;
 import lombok.Setter;
 import pw.narumi.proton.client.ProtonClient;
-import pw.narumi.proton.shared.io.PacketOutputStream;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketHandler;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
@@ -32,10 +34,13 @@ public class Client {
         if (packetID == -1)
             return;
 
-        try (final PacketOutputStream packetOutputStream = new PacketOutputStream()) {
-            packetOutputStream.writeVarInt(packetID);
-            packet.write(packetOutputStream);
-            this.channel.write(packetOutputStream.asBuffer());
+        try (
+                final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                final DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream)
+        ) {
+            dataOutputStream.writeByte(packetID);
+            packet.write(dataOutputStream);
+            this.channel.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
         } catch (IOException ex) {
             ex.printStackTrace();
         }

@@ -6,10 +6,11 @@ import pw.narumi.proton.client.command.CommandManager;
 import pw.narumi.proton.client.command.impl.server.ConnectCommand;
 import pw.narumi.proton.client.packet.incoming.*;
 import pw.narumi.proton.client.packet.outgoing.*;
-import pw.narumi.proton.shared.io.PacketInputStream;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketRegistry;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -99,8 +100,8 @@ public enum ProtonClient {
                 return;
             }
 
-            try (final PacketInputStream inputStream = new PacketInputStream(byteBuffer.array())) {
-                final Packet packet = this.incomingPacketRegistry.createPacket(inputStream.readVarInt());
+            try (final DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(byteBuffer.array()))) {
+                final Packet packet = this.incomingPacketRegistry.createPacket(inputStream.readByte());
                 if (packet != null) {
                     packet.read(inputStream);
                     packet.handle(client.getPacketHandler());

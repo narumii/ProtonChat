@@ -1,10 +1,10 @@
 package pw.narumi.proton.client.packet.outgoing;
 
 import lombok.Getter;
-import pw.narumi.proton.shared.io.PacketInputStream;
-import pw.narumi.proton.shared.io.PacketOutputStream;
 import pw.narumi.proton.shared.packet.Packet;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 @Getter
@@ -13,10 +13,10 @@ public class ClientCommandPacket extends Packet {
     private String command;
 
     @Override
-    public void read(final PacketInputStream inputStream) throws IOException {
+    public void read(final DataInputStream inputStream) throws IOException {
         this.command = inputStream.readUTF();
     }
 
     @Override
-    public void write(final PacketOutputStream outputStream) {}
+    public void write(final DataOutputStream outputStream) {}
 }
