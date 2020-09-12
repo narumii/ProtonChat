@@ -5,6 +5,7 @@ import pw.narumi.proton.client.ProtonClient;
 import pw.narumi.proton.client.command.exception.CommandException;
 import pw.narumi.proton.client.command.exception.CommandUsageException;
 import pw.narumi.proton.client.packet.outgoing.ClientChatPacket;
+import pw.narumi.proton.shared.cryptography.CryptographyHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,8 +40,8 @@ public class CommandManager {
             }
             Bootstrap.LOGGER.info(String.format("$red$Command $yellow$\"%s\" $red$not found, use command $yellow$\"help\" $red$to check command list.", commandAlias.toUpperCase()));
         }else if (ProtonClient.INSTANCE.getClient().getChannel() != null && !string.startsWith("/")) {
-            ProtonClient.INSTANCE.getClient().sendPacket(new ClientChatPacket("123", "123"));
-            ProtonClient.INSTANCE.getClient().getKeys().forEach((userName, key) -> ProtonClient.INSTANCE.getClient().sendPacket(new ClientChatPacket(userName, /*Encode*/string)));
+            ProtonClient.INSTANCE.getClient().getKeys().forEach((userName, key)
+                    -> ProtonClient.INSTANCE.getClient().sendPacket(new ClientChatPacket(userName, CryptographyHelper.encodeMessage(string, key))));
         }
     }
 

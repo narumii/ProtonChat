@@ -34,6 +34,8 @@ public enum ProtonServer {
     private final PacketRegistry incomingPacketRegistry;
     private final PacketRegistry outgoingPacketRegistry;
 
+    private final ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
+
     ProtonServer() {
         this.clientManager = new ClientManager();
         this.incomingPacketRegistry = new PacketRegistry(false);
@@ -105,7 +107,7 @@ public enum ProtonServer {
     private void read(final SelectionKey key) {
         this.clientManager.findClient((SocketChannel) key.channel()).ifPresent(client -> {
             try {
-                final ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
+                byteBuffer.clear();
                 if (client.getChannel().read(byteBuffer) == -1) {
                     this.clientManager.removeClient(client);
                     client.close();

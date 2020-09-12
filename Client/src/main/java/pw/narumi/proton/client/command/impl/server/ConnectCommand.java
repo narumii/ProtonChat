@@ -21,6 +21,9 @@ public class ConnectCommand extends Command {
         if (args.length != 2)
             throw new CommandUsageException(this.getUsage());
 
+        if (client.getKeyPair() == null)
+            throw new CommandException("At first you must generate your publicKey using command \"generateKey\"");
+
         final String ip = args[0];
         final int port = Integer.parseInt(args[1]);
 
