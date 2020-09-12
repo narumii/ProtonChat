@@ -25,7 +25,7 @@ public class ConnectCommand extends Command {
         final int port = Integer.parseInt(args[1]);
 
         try {
-            ProtonClient.INSTANCE.initializeConnection(ip, port, ignored -> {
+            ProtonClient.INSTANCE.initializeConnection(ip, port, () -> {
                 client.sendPacket(new ConnectUserPacket(client.getUserName()));
                 client.sendPacket(new ClientAddPublicKeyPacket(Base64.getEncoder().encodeToString(client.getKeyPair().getPublic().getEncoded())));
             });

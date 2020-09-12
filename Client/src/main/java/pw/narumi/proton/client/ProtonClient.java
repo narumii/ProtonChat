@@ -26,9 +26,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.Base64;
 import java.util.Iterator;
-import java.util.function.Consumer;
 
 @Getter
 public enum ProtonClient {
@@ -66,7 +64,7 @@ public enum ProtonClient {
     private SocketChannel socketChannel;
     private Selector selector;
 
-    public void initializeConnection(final String ip, final int port, final Consumer<Void> connectAction) throws IOException {
+    public void initializeConnection(final String ip, final int port, final Runnable connectAction) throws IOException {
         this.selector = Selector.open();
         this.socketChannel = SocketChannel.open();
         this.socketChannel.connect(new InetSocketAddress(ip, port));
@@ -75,7 +73,7 @@ public enum ProtonClient {
         this.client.setChannel(this.socketChannel);
         Bootstrap.LOGGER.info("$green$Connected to server: $r$" + this.socketChannel.getRemoteAddress() + "\n");
         Bootstrap.setPrefix(Logger.PURPLE + this.client.getUserName() + Logger.PURPLE_BRIGHT + ": " + Logger.RESET);
-        connectAction.accept(null);
+        connectAction.run();
 
         new Thread(() -> {
             try {
