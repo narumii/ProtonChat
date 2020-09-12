@@ -1,7 +1,7 @@
 package pw.narumi.proton.client;
 
 import pw.narumi.proton.client.client.Client;
-import pw.narumi.proton.logger.Logger;
+import pw.narumi.proton.shared.logger.Logger;
 
 import java.util.Scanner;
 

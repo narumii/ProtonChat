@@ -1,20 +1,17 @@
 package pw.narumi.proton.server.packet.outgoing;
 
+import lombok.AllArgsConstructor;
 import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+@AllArgsConstructor
 public class ServerChatPacket extends Packet {
 
     private final String user;
     private final String message;
-
-    public ServerChatPacket(final String user, final String message) {
-        this.user = user;
-        this.message = message;
-    }
 
     @Override
     public void read(final DataInputStream inputStream) {}

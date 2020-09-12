@@ -1,20 +1,17 @@
 package pw.narumi.proton.server.packet.outgoing;
 
+import lombok.AllArgsConstructor;
 import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+@AllArgsConstructor
 public class AddPublicKeyPacket extends Packet {
 
     private final String userName;
     private final String publicKey;
-
-    public AddPublicKeyPacket(final String userName, final String publicKey) {
-        this.userName = userName;
-        this.publicKey = publicKey;
-    }
 
     @Override
     public void read(final DataInputStream inputStream) {}

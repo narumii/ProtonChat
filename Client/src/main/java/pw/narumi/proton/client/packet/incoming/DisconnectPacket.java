@@ -1,24 +1,22 @@
 package pw.narumi.proton.client.packet.incoming;
 
+import lombok.Getter;
 import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+@Getter
 public class DisconnectPacket extends Packet {
 
-    private final String message;
+    private String message;
 
-    public DisconnectPacket(final String message) {
-        this.message = message;
+    @Override
+    public void read(final DataInputStream inputStream) throws IOException {
+        this.message = inputStream.readUTF();
     }
 
     @Override
-    public void read(final DataInputStream inputStream) {}
-
-    @Override
-    public void write(final DataOutputStream outputStream) throws IOException {
-        outputStream.writeUTF(message);
-    }
+    public void write(final DataOutputStream outputStream) {}
 }

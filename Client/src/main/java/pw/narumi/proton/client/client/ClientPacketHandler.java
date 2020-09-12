@@ -7,6 +7,5 @@ public class ClientPacketHandler implements PacketHandler {
 
     @Override
     public void packetReceived(final Packet packet) {
-
     }
 }

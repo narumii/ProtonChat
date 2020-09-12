@@ -10,7 +10,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -33,7 +32,7 @@ public class Client {
     }
 
     public void sendPacket(final Packet packet) {
-        if (this.channel == null)
+        if (this.channel == null || !this.channel.isOpen())
             return;
 
         final int packetID = ProtonClient.INSTANCE.getOutgoingPacketRegistry().getPacketID(packet.getClass());
@@ -53,7 +52,7 @@ public class Client {
     }
 
     public void close() {
-        if (this.channel == null)
+        if (this.channel == null || !this.channel.isOpen())
             return;
 
         try {

@@ -1,18 +1,16 @@
 package pw.narumi.proton.server.packet.outgoing;
 
+import lombok.AllArgsConstructor;
 import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+@AllArgsConstructor
 public class DisconnectPacket extends Packet {
 
     private final String message;
-
-    public DisconnectPacket(final String message) {
-        this.message = message;
-    }
 
     @Override
     public void read(final DataInputStream inputStream) {}

@@ -1,4 +1,4 @@
-package pw.narumi.proton.logger;
+package pw.narumi.proton.shared.logger;
 
 public class Logger {
 

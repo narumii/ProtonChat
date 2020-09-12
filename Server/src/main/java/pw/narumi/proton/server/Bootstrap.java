@@ -1,7 +1,5 @@
 package pw.narumi.proton.server;
 
-import pw.narumi.proton.logger.Logger;
-
 import java.io.IOException;
 import java.util.Scanner;
 

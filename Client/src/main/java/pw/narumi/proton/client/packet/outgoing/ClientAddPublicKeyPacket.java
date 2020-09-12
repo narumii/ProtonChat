@@ -1,22 +1,22 @@
 package pw.narumi.proton.client.packet.outgoing;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
 import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-@Getter
+@AllArgsConstructor
 public class ClientAddPublicKeyPacket extends Packet {
 
-    private String publicKey;
+    private final String publicKey;
 
     @Override
-    public void read(final DataInputStream inputStream) throws IOException {
-        this.publicKey = inputStream.readUTF();
+    public void read(final DataInputStream inputStream) {}
+
+    @Override
+    public void write(final DataOutputStream outputStream) throws IOException {
+        outputStream.writeUTF(this.publicKey);
     }
-
-    @Override
-    public void write(final DataOutputStream outputStream) {}
 }
