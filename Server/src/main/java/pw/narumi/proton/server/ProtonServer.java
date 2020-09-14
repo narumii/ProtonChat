@@ -78,6 +78,7 @@ public enum ProtonServer {
                     }
                 }
             } catch (final IOException ex) {
+                ex.printStackTrace();
             }
 
             throw new ThreadDeath();
@@ -123,7 +124,7 @@ public enum ProtonServer {
                         packet.handle(client.getPacketHandler());
                     }
                 }
-            } catch (final IOException ex) {
+            } catch (final IOException ignored) {
                 System.out.println(String.format("User disconnected: [%s]", client.getUsername()));
                 this.clientManager.removeClient(client);
                 client.close();
