@@ -1,6 +1,5 @@
 package pw.narumi.proton.server.packet.incoming;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import pw.narumi.proton.shared.packet.Packet;
 

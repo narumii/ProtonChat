@@ -2,19 +2,14 @@ package pw.narumi.proton.client;
 
 import jline.console.ConsoleReader;
 import jline.console.UserInterruptException;
-import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 import pw.narumi.proton.client.client.Client;
 import pw.narumi.proton.client.logger.BungeeLogger;
-import pw.narumi.proton.client.logger.ChatColor;
-import pw.narumi.proton.client.logger.ColouredWriter;
 import pw.narumi.proton.client.logger.LoggingOutputStream;
-import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class Bootstrap {

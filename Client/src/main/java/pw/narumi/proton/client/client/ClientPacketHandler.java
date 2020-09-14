@@ -2,11 +2,9 @@ package pw.narumi.proton.client.client;
 
 import lombok.AllArgsConstructor;
 import pw.narumi.proton.client.Bootstrap;
-import pw.narumi.proton.client.ProtonClient;
 import pw.narumi.proton.client.logger.ChatColor;
 import pw.narumi.proton.client.packet.incoming.*;
 import pw.narumi.proton.client.packet.outgoing.ClientHandshakePacket;
-import pw.narumi.proton.client.packet.outgoing.ClientRequestKeyPacket;
 import pw.narumi.proton.client.packet.outgoing.ClientResponseKeyPacket;
 import pw.narumi.proton.shared.cryptography.CryptographyHelper;
 import pw.narumi.proton.shared.packet.Packet;

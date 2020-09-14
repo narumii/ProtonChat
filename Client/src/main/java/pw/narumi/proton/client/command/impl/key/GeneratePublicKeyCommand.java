@@ -9,7 +9,6 @@ import pw.narumi.proton.client.logger.ChatColor;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.util.Base64;
-import java.util.concurrent.TimeUnit;
 
 public class GeneratePublicKeyCommand extends Command {
 

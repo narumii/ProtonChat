@@ -5,9 +5,6 @@ import pw.narumi.proton.client.client.Client;
 import pw.narumi.proton.client.command.Command;
 import pw.narumi.proton.client.command.exception.CommandException;
 import pw.narumi.proton.client.command.exception.CommandUsageException;
-import pw.narumi.proton.client.packet.outgoing.ClientHandshakePacket;
-
-import java.util.Base64;
 
 public class ConnectCommand extends Command {
 

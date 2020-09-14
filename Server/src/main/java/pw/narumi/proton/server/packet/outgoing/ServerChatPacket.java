@@ -1,7 +1,6 @@
 package pw.narumi.proton.server.packet.outgoing;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.DataInputStream;

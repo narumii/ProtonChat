@@ -5,7 +5,6 @@ import pw.narumi.proton.shared.packet.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 
 @AllArgsConstructor
 public class ServerRequestKeyPacket extends Packet {
