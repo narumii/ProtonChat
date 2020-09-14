@@ -52,14 +52,11 @@ public class ClientManager {
     }
 
     public boolean isNickValid(final String string) {
-        if (string.isEmpty())
-            return false;
-
-        if (string.length() > 16)
+        if (string.isEmpty() || string.length() > 16)
             return false;
 
         for (final char c : string.toCharArray()) {
-            if (Character.isSpaceChar(c) || Character.isWhitespace(c) || (!Character.isLetterOrDigit(c))) {
+            if (Character.isSpaceChar(c) || Character.isWhitespace(c) || !Character.isLetterOrDigit(c)) {
                 return false;
             }
         }

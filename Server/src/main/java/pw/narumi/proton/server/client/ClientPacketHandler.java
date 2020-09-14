@@ -17,14 +17,16 @@ public class ClientPacketHandler implements PacketHandler {
         if (!this.client.isLogged()) {
             if (packet instanceof ClientHandshakePacket) {
                 final ClientHandshakePacket handshakePacket = (ClientHandshakePacket) packet;
-
                 if (ProtonServer.INSTANCE.getClientManager().clientExists(handshakePacket.getUserName())){
-                    this.client.sendPacket(new ServerDisconnectPacket("Another user uses this name."));
+                    this.client.sendPacket(new ServerDisconnectPacket("Someone already uses this nickname."));
                     this.client.close();
+                    return;
                 }
+
                 if (!ProtonServer.INSTANCE.getClientManager().isNickValid(handshakePacket.getUserName())) {
-                    this.client.sendPacket(new ServerDisconnectPacket("Your nick is invalid. (Max nick length: 16, you can't use any unicode char or space)"));
+                    this.client.sendPacket(new ServerDisconnectPacket("Your nick is invalid. (Max nick length: 16, you can't use unicode chars or spaces)"));
                     this.client.close();
+                    return;
                 }
 
                 this.client.setUsername(handshakePacket.getUserName());
