@@ -3,10 +3,7 @@ package pw.narumi.proton.server.client;
 import lombok.AllArgsConstructor;
 import pw.narumi.proton.server.ProtonServer;
 import pw.narumi.proton.server.packet.incoming.*;
-import pw.narumi.proton.server.packet.outgoing.ServerChatPacket;
-import pw.narumi.proton.server.packet.outgoing.ServerRequestKeyPacket;
-import pw.narumi.proton.server.packet.outgoing.ServerResponseKeyPacket;
-import pw.narumi.proton.server.packet.outgoing.ServerResponseMessagePacket;
+import pw.narumi.proton.server.packet.outgoing.*;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketHandler;
 
@@ -20,13 +17,23 @@ public class ClientPacketHandler implements PacketHandler {
         if (!this.client.isLogged()) {
             if (packet instanceof ClientHandshakePacket) {
                 final ClientHandshakePacket handshakePacket = (ClientHandshakePacket) packet;
+
+                if (ProtonServer.INSTANCE.getClientManager().clientExists(handshakePacket.getUserName())){
+                    this.client.sendPacket(new ServerDisconnectPacket("Another user uses this name."));
+                    this.client.close();
+                }
+                if (!ProtonServer.INSTANCE.getClientManager().isNickValid(handshakePacket.getUserName())) {
+                    this.client.sendPacket(new ServerDisconnectPacket("Your nick is invalid. (Max nick length: 16, you can't use any unicode char or space)"));
+                    this.client.close();
+                }
+
                 this.client.setUsername(handshakePacket.getUserName());
                 this.client.setLogged(true);
-                this.client.sendPacket(new ServerRequestKeyPacket());
                 System.out.println(String.format("New user connected: [%s]", handshakePacket.getUserName()));
                 ProtonServer.INSTANCE.getClientManager().sendPacket(new ServerResponseMessagePacket(String.format("New user connected: [%s]", handshakePacket.getUserName())));
+                ProtonServer.INSTANCE.getClientManager().sendPacketBesides(new ServerRequestKeyPacket(), client.getChannel());
             } else {
-                this.client.sendPacket(new ServerResponseMessagePacket("Yeah yeah XD"));
+                this.client.sendPacket(new ServerDisconnectPacket("Yeah yeah XD"));
                 this.client.close();
             }
             return;
