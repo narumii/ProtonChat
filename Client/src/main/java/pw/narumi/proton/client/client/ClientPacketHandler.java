@@ -21,7 +21,6 @@ public class ClientPacketHandler implements PacketHandler {
             client.sendPacket(new ClientHandshakePacket(client.getUserName()));
         }else if (packet instanceof ServerDisconnectPacket) {
             Bootstrap.LOGGER.info(ChatColor.RED + "Disconnected: " + ChatColor.RESET + ((ServerDisconnectPacket) packet).getMessage());
-            client.close();
         } else if (packet instanceof ServerResponseMessagePacket) {
             Bootstrap.LOGGER.info(ChatColor.RED + "Message: " + ChatColor.RESET + ((ServerResponseMessagePacket) packet).getMessage());
         } else {

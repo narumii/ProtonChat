@@ -39,7 +39,7 @@ public class CommandManager {
                 }
                 return;
             }
-            Bootstrap.LOGGER.info(String.format(ChatColor.RED + "Command " + ChatColor.YELLOW + "\"%s\" " + ChatColor.RED + "not found, use command " + ChatColor.YELLOW + "\"help\" " + ChatColor.RED + "to check command list.", commandAlias.toUpperCase()));
+            Bootstrap.LOGGER.info(String.format(ChatColor.RED + "Command " + ChatColor.YELLOW + "\"%s\" " + ChatColor.RED + "not found, use " + ChatColor.YELLOW + "\"help\" " + ChatColor.RED + " command to see available command list.", commandAlias.toUpperCase()));
         }else if (ProtonClient.INSTANCE.getClient().getChannel() != null && !string.startsWith("/")) {
             ProtonClient.INSTANCE.getClient().getKeys().forEach((userName, key)
                     -> ProtonClient.INSTANCE.getClient().sendPacket(new ClientChatPacket(userName, CryptographyHelper.encodeMessage(string, key))));

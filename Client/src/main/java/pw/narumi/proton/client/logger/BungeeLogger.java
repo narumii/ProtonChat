@@ -16,7 +16,7 @@ public class BungeeLogger extends Logger {
 
         try {
             ColouredWriter consoleHandler = new ColouredWriter(reader);
-            consoleHandler.setFormatter(new ConciseFormatter(true));
+            consoleHandler.setFormatter(new ConciseFormatter());
             addHandler(consoleHandler);
         } catch (Exception ex) {
             System.err.println("Could not register logger!");

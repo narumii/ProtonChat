@@ -1,4 +1,4 @@
-package pw.narumi.proton.client.command.impl.key;
+package pw.narumi.proton.client.command.impl;
 
 import pw.narumi.proton.client.Bootstrap;
 import pw.narumi.proton.client.client.Client;
@@ -24,7 +24,7 @@ public class GeneratePublicKeyCommand extends Command {
             final KeyPair keyPair = keyPairGenerator.generateKeyPair();
             client.setKeyPair(keyPair);
 
-            Bootstrap.LOGGER.info(ChatColor.RED + "Your encode message code: " + ChatColor.YELLOW + Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()));
+            Bootstrap.LOGGER.info(ChatColor.RED + "Your encoded public key is: " + ChatColor.YELLOW + Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()));
         }catch (final Exception e) {
             throw new CommandException(e.getMessage());
         }

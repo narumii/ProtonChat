@@ -12,9 +12,6 @@ import java.util.logging.LogRecord;
 @RequiredArgsConstructor
 public class ConciseFormatter extends Formatter {
 
-    private final DateFormat date = new SimpleDateFormat("HH:mm:ss");
-    private final boolean coloured;
-
     @Override
     @SuppressWarnings("ThrowableResultIgnored")
     public String format(LogRecord record) {

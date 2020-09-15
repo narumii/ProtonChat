@@ -16,7 +16,7 @@ public final class Bootstrap {
                 port = Integer.parseInt(args[0]);
             }
         } catch (final Exception e) {
-            System.err.println("Invalid port, setting default port value. (1918)");
+            System.err.println("Invalid server port, using the default one (1918).");
         }
 
         ProtonServer.INSTANCE.initializeServer("0.0.0.0", port);

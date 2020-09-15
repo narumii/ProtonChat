@@ -10,7 +10,7 @@ public class LogDispatcher extends Thread {
     private final BlockingQueue<LogRecord> queue = new LinkedBlockingQueue<>();
 
     public LogDispatcher(BungeeLogger logger) {
-        super("BungeeCord Logger Thread");
+        super("ProtonChat Logger Thread");
         this.logger = logger;
     }
 
