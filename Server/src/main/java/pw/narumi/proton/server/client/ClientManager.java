@@ -42,17 +42,17 @@ public class ClientManager {
 
     public Optional<Client> findClient(final String username) {
         return this.clients.stream()
-                .filter(client -> client.getUsername().equals(username))
+                .filter(client -> client.getUsername() != null && client.getUsername().equalsIgnoreCase(username))
                 .findFirst();
     }
 
     public boolean clientExists(final String string) {
         return this.clients.stream()
-                .anyMatch(client -> client.getUsername().equalsIgnoreCase(string));
+                .anyMatch(client -> client.getUsername() != null && client.getUsername().equalsIgnoreCase(string));
     }
 
     public boolean isNickValid(final String string) {
-        if (string.isEmpty() || string.length() > 16)
+        if (string == null || string.isEmpty() || string.length() > 16)
             return false;
 
         for (final char c : string.toCharArray()) {
