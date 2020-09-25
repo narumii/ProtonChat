@@ -1,5 +1,5 @@
 # ProtonChat
-IRC With Asymetric (RSA) encryption and end-to-end encryption
+IRC With Symmetric (AES) encryption and end-to-end encryption
 
 ## TODO:
 - Add roms
