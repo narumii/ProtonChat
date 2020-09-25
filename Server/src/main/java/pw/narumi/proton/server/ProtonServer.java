@@ -134,7 +134,7 @@ public enum ProtonServer {
                         packet.handle(client.getPacketHandler());
                     }
                 }
-            } catch (final IOException ignored) {
+            } catch (final IOException ex) {
                 System.out.println(String.format("User disconnected: [%s]", client.getUserName()));
                 this.clientManager.removeClient(client);
                 client.close();
