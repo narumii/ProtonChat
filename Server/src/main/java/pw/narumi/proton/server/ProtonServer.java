@@ -36,7 +36,7 @@ public enum ProtonServer {
     ProtonServer() {
         try {
             final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(4096);
+            keyPairGenerator.initialize(1024);
             this.keyPair = keyPairGenerator.generateKeyPair();
         } catch (final Exception ex) {
             throw new RuntimeException("Can't generate key pair!", ex.getCause());

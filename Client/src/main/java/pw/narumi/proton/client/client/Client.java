@@ -16,7 +16,7 @@ import pw.narumi.proton.shared.packet.PacketHandler;
 public class Client {
 
     private final String userName;
-    private final ByteBuffer buffer = ByteBuffer.allocate(1024);
+    private final ByteBuffer buffer = ByteBuffer.allocate(4096);
     private final PacketHandler packetHandler = new ClientPacketHandler(this);
     private SocketChannel channel;
     private SecretKey secretKey;
