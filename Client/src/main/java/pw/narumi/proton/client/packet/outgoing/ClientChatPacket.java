@@ -10,7 +10,6 @@ import java.io.IOException;
 @AllArgsConstructor
 public class ClientChatPacket extends Packet {
 
-    private final String toUser;
     private final String message;
 
     @Override
@@ -18,7 +17,6 @@ public class ClientChatPacket extends Packet {
 
     @Override
     public void write(final DataOutputStream outputStream) throws IOException {
-        outputStream.writeUTF(this.toUser);
         outputStream.writeUTF(this.message);
     }
 }

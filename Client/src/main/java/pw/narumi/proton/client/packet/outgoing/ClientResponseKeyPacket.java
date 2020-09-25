@@ -1,27 +1,25 @@
 package pw.narumi.proton.client.packet.outgoing;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import pw.narumi.proton.shared.packet.Packet;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.security.PublicKey;
+import javax.crypto.SecretKey;
+import lombok.AllArgsConstructor;
+import pw.narumi.proton.shared.cryptography.CryptographyHelper;
+import pw.narumi.proton.shared.packet.Packet;
 
-@AllArgsConstructor @Getter
+@AllArgsConstructor
 public class ClientResponseKeyPacket extends Packet {
 
-    private final String userName;
-    private final String publicKey;
+    private final PublicKey publicKey;
+    private final SecretKey secretKey;
 
     @Override
-    public void read(final DataInputStream inputStream) throws IOException {
-
-    }
+    public void read(final DataInputStream inputStream) {}
 
     @Override
     public void write(final DataOutputStream outputStream) throws IOException {
-        outputStream.writeUTF(userName);
-        outputStream.writeUTF(publicKey);
+        outputStream.writeUTF(CryptographyHelper.serializeSecretKey(this.secretKey, this.publicKey));
     }
 }

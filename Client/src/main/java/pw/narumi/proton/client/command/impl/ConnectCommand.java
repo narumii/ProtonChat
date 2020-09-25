@@ -16,16 +16,14 @@ public class ConnectCommand extends Command {
     public void invoke(final Client client, final String... args) throws CommandException {
         if (args.length != 2)
             throw new CommandUsageException(this.getUsage());
-        if (client.getKeyPair() == null)
-            throw new CommandException("You must first generate your public key using \"generateKey\" command");
 
         final String ip = args[0];
         final int port = Integer.parseInt(args[1]);
 
         try {
             ProtonClient.INSTANCE.initializeConnection(ip, port);
-        } catch (final Exception e) {
-            throw new CommandException(e.getMessage());
+        } catch (final Exception ex) {
+            throw new CommandException(ex.getCause());
         }
     }
 }

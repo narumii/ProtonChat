@@ -1,8 +1,10 @@
 package pw.narumi.proton.server.client;
 
+import javax.crypto.SecretKey;
 import lombok.Data;
 import pw.narumi.proton.server.ProtonServer;
 import pw.narumi.proton.server.packet.outgoing.ServerRequestHandshakePacket;
+import pw.narumi.proton.shared.cryptography.CryptographyHelper;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketHandler;
 
@@ -16,9 +18,10 @@ import java.nio.channels.SocketChannel;
 public class Client {
 
     private final SocketChannel channel;
-    private final ByteBuffer buffer = ByteBuffer.allocate(4096);
+    private final ByteBuffer buffer = ByteBuffer.allocate(1024);
     private final PacketHandler packetHandler = new ClientPacketHandler(this);
-    private String username;
+    private String userName;
+    private SecretKey secretKey;
     private boolean logged;
 
     public void requestLogin() {
@@ -47,8 +50,9 @@ public class Client {
         ) {
             dataOutputStream.writeByte(packetID);
             packet.write(dataOutputStream);
-            this.channel.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
-        } catch (IOException ex) {
+            final byte[] data = byteArrayOutputStream.toByteArray();
+            this.channel.write(ByteBuffer.wrap((this.secretKey != null ? CryptographyHelper.encodeData(data, this.secretKey) : data)));
+        } catch (final IOException ex) {
             ex.printStackTrace();
         }
     }

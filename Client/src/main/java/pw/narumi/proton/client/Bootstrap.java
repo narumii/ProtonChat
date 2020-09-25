@@ -40,7 +40,7 @@ public class Bootstrap {
 
                 ProtonClient.INSTANCE.getCommandManager().handleCommand(line);
             }
-        }catch (final UserInterruptException e) {
+        } catch (final UserInterruptException ex) {
             System.exit(0);
         }
     }
@@ -48,6 +48,4 @@ public class Bootstrap {
     public static void setPrefix(final String prefix) {
         Bootstrap.prefix = prefix;
     }
-
-
 }

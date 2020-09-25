@@ -31,18 +31,17 @@ public class CommandManager {
                     final String[] commandArgs = new String[args.length - 1];
                     System.arraycopy(args, 1, commandArgs, 0, args.length - 1);
                     command.get().invoke(ProtonClient.INSTANCE.getClient(), commandArgs);
-                } catch (final CommandException exception) {
-                    if (exception instanceof CommandUsageException)
-                        Bootstrap.LOGGER.info(ChatColor.RED + "Usage: " + ChatColor.YELLOW + exception.getMessage());
+                } catch (final CommandException ex) {
+                    if (ex instanceof CommandUsageException)
+                        Bootstrap.LOGGER.info(ChatColor.RED + "Usage: " + ChatColor.YELLOW + ex.getMessage());
                     else
-                        Bootstrap.LOGGER.info(String.format(ChatColor.RED + "Error processing command " + ChatColor.YELLOW + "\"%s\": " + ChatColor.RESET + "%s", commandAlias.toUpperCase(), exception.getMessage()));
+                        Bootstrap.LOGGER.info(String.format(ChatColor.RED + "Error processing command " + ChatColor.YELLOW + "\"%s\": " + ChatColor.RESET + "%s", commandAlias.toUpperCase(), ex.getMessage()));
                 }
                 return;
             }
             Bootstrap.LOGGER.info(String.format(ChatColor.RED + "Command " + ChatColor.YELLOW + "\"%s\" " + ChatColor.RED + "not found, use " + ChatColor.YELLOW + "\"help\" " + ChatColor.RED + " command to see available command list.", commandAlias.toUpperCase()));
-        }else if (ProtonClient.INSTANCE.getClient().getChannel() != null && !string.startsWith("/")) {
-            ProtonClient.INSTANCE.getClient().getKeys().forEach((userName, key)
-                    -> ProtonClient.INSTANCE.getClient().sendPacket(new ClientChatPacket(userName, CryptographyHelper.encodeMessage(string, key))));
+        } else if (ProtonClient.INSTANCE.getClient().getChannel() != null && !string.startsWith("/")) {
+            ProtonClient.INSTANCE.getClient().sendPacket(new ClientChatPacket(string));
         }
     }
 

@@ -24,10 +24,6 @@ public class ClientManager {
         this.clients.forEach(client -> client.sendPacket(packet));
     }
 
-    public void sendPacketTo(final Packet packet, final String user) {
-        this.findClient(user).ifPresent(client -> client.sendPacket(packet));
-    }
-
     public void sendPacketBesides(final Packet packet, final Channel channel) {
         this.clients.stream()
                 .filter(client -> !client.getChannel().equals(channel))
@@ -42,13 +38,13 @@ public class ClientManager {
 
     public Optional<Client> findClient(final String username) {
         return this.clients.stream()
-                .filter(client -> client.getUsername() != null && client.getUsername().equalsIgnoreCase(username))
+                .filter(client -> client.getUserName() != null && client.getUserName().equalsIgnoreCase(username))
                 .findFirst();
     }
 
     public boolean clientExists(final String string) {
         return this.clients.stream()
-                .anyMatch(client -> client.getUsername() != null && client.getUsername().equalsIgnoreCase(string));
+                .anyMatch(client -> client.getUserName() != null && client.getUserName().equalsIgnoreCase(string));
     }
 
     public boolean isNickValid(final String string) {

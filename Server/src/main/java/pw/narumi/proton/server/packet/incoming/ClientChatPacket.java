@@ -10,12 +10,10 @@ import java.io.IOException;
 @Getter
 public class ClientChatPacket extends Packet {
 
-    private String toUser;
     private String message;
 
     @Override
     public void read(final DataInputStream inputStream) throws IOException {
-        this.toUser = inputStream.readUTF();
         this.message = inputStream.readUTF();
     }
 

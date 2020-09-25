@@ -5,6 +5,7 @@ import pw.narumi.proton.client.command.Command;
 import pw.narumi.proton.client.command.exception.CommandException;
 
 public class ExitCommand extends Command {
+
     public ExitCommand(final String name, final String usage) {
         super(name, usage);
     }

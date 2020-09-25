@@ -5,11 +5,11 @@ import lombok.Setter;
 import pw.narumi.proton.client.client.Client;
 import pw.narumi.proton.client.command.CommandManager;
 import pw.narumi.proton.client.command.impl.ExitCommand;
-import pw.narumi.proton.client.command.impl.GeneratePublicKeyCommand;
 import pw.narumi.proton.client.command.impl.ConnectCommand;
 import pw.narumi.proton.client.logger.ChatColor;
 import pw.narumi.proton.client.packet.incoming.*;
 import pw.narumi.proton.client.packet.outgoing.*;
+import pw.narumi.proton.shared.cryptography.CryptographyHelper;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketRegistry;
 
@@ -38,7 +38,6 @@ public enum ProtonClient {
         this.outgoingPacketRegistry = new PacketRegistry(true);
         this.commandManager.registerCommands(
                 new ConnectCommand("connect", "connect <ip> <port>"),
-                new GeneratePublicKeyCommand("generateKey", null),
                 new ExitCommand("exit", null)
         );
 
@@ -46,7 +45,6 @@ public enum ProtonClient {
                 ClientChatPacket.class,
                 ClientCommandPacket.class,
                 ClientHandshakePacket.class,
-                ClientRequestKeyPacket.class,
                 ClientResponseKeyPacket.class
         );
         this.incomingPacketRegistry.registerPackets(
@@ -54,7 +52,6 @@ public enum ProtonClient {
                 ServerDisconnectPacket.class,
                 ServerRequestHandshakePacket.class,
                 ServerRequestKeyPacket.class,
-                ServerResponseKeyPacket.class,
                 ServerResponseMessagePacket.class
         );
     }
@@ -105,7 +102,8 @@ public enum ProtonClient {
                 return;
             }
 
-            try (final DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(buffer.array()))) {
+            final byte[] data = buffer.array();
+            try (final DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream((this.client.getSecretKey() != null ? CryptographyHelper.decodeData(data, this.client.getSecretKey()) : data)))) {
                 final Packet packet = this.incomingPacketRegistry.createPacket(inputStream.readByte());
                 if (packet != null) {
                     packet.read(inputStream);

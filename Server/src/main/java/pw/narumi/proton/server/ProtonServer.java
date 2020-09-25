@@ -1,10 +1,13 @@
 package pw.narumi.proton.server;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import lombok.Getter;
 import pw.narumi.proton.server.client.Client;
 import pw.narumi.proton.server.client.ClientManager;
 import pw.narumi.proton.server.packet.incoming.*;
 import pw.narumi.proton.server.packet.outgoing.*;
+import pw.narumi.proton.shared.cryptography.CryptographyHelper;
 import pw.narumi.proton.shared.packet.Packet;
 import pw.narumi.proton.shared.packet.PacketRegistry;
 
@@ -25,11 +28,20 @@ public enum ProtonServer {
 
     INSTANCE;
 
+    private final KeyPair keyPair;
     private final ClientManager clientManager;
     private final PacketRegistry incomingPacketRegistry;
     private final PacketRegistry outgoingPacketRegistry;
 
     ProtonServer() {
+        try {
+            final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(4096);
+            this.keyPair = keyPairGenerator.generateKeyPair();
+        } catch (final Exception ex) {
+            throw new RuntimeException("Can't generate key pair!", ex.getCause());
+        }
+
         this.clientManager = new ClientManager();
         this.incomingPacketRegistry = new PacketRegistry(false);
         this.outgoingPacketRegistry = new PacketRegistry(true);
@@ -37,7 +49,6 @@ public enum ProtonServer {
                 ClientChatPacket.class,
                 ClientCommandPacket.class,
                 ClientHandshakePacket.class,
-                ClientRequestKeyPacket.class,
                 ClientResponseKeyPacket.class
         );
         this.outgoingPacketRegistry.registerPackets(
@@ -45,7 +56,6 @@ public enum ProtonServer {
                 ServerDisconnectPacket.class,
                 ServerRequestHandshakePacket.class,
                 ServerRequestKeyPacket.class,
-                ServerResponseKeyPacket.class,
                 ServerResponseMessagePacket.class
         );
     }
@@ -108,15 +118,16 @@ public enum ProtonServer {
                 final ByteBuffer buffer = client.getBuffer();
                 ((Buffer) buffer).clear();
                 if (client.getChannel().read(buffer) == -1) {
-                    System.out.println(String.format("User disconnected: [%s]", client.getUsername()));
+                    System.out.println(String.format("User disconnected: [%s]", client.getUserName()));
                     this.clientManager.removeClient(client);
                     client.close();
 
-                    this.clientManager.sendPacket(new ServerResponseMessagePacket(String.format("User disconnected: [%s]", client.getUsername())));
+                    this.clientManager.sendPacket(new ServerResponseMessagePacket(String.format("User disconnected: [%s]", client.getUserName())));
                     return;
                 }
 
-                try (final DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(buffer.array()))) {
+                final byte[] data = buffer.array();
+                try (final DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream((client.getSecretKey() != null ? CryptographyHelper.decodeData(data, client.getSecretKey()) : data)))) {
                     final Packet packet = this.incomingPacketRegistry.createPacket(inputStream.readByte());
                     if (packet != null) {
                         packet.read(inputStream);
@@ -124,11 +135,11 @@ public enum ProtonServer {
                     }
                 }
             } catch (final IOException ignored) {
-                System.out.println(String.format("User disconnected: [%s]", client.getUsername()));
+                System.out.println(String.format("User disconnected: [%s]", client.getUserName()));
                 this.clientManager.removeClient(client);
                 client.close();
 
-                this.clientManager.sendPacket(new ServerResponseMessagePacket(String.format("User disconnected: [%s]", client.getUsername())));
+                this.clientManager.sendPacket(new ServerResponseMessagePacket(String.format("User disconnected: [%s]", client.getUserName())));
             }
         });
     }

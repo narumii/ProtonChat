@@ -29,11 +29,11 @@ public class ClientPacketHandler implements PacketHandler {
                     return;
                 }
 
-                this.client.setUsername(handshakePacket.getUserName());
+                this.client.setUserName(handshakePacket.getUserName());
                 this.client.setLogged(true);
-                System.out.println(String.format("New user connected: [%s]", handshakePacket.getUserName()));
-                ProtonServer.INSTANCE.getClientManager().sendPacket(new ServerResponseMessagePacket(String.format("New user connected: [%s]", handshakePacket.getUserName())));
-                ProtonServer.INSTANCE.getClientManager().sendPacketBesides(new ServerRequestKeyPacket(), client.getChannel());
+                this.client.sendPacket(new ServerRequestKeyPacket());
+                System.out.println(String.format("New user connected: [%s]", this.client.getUserName()));
+                ProtonServer.INSTANCE.getClientManager().sendPacketBesides(new ServerResponseMessagePacket(String.format("New user connected: [%s]", this.client.getUserName())), this.client.getChannel());
             } else {
                 this.client.sendPacket(new ServerDisconnectPacket("Yeah yeah XD"));
                 this.client.close();
@@ -43,14 +43,11 @@ public class ClientPacketHandler implements PacketHandler {
 
         if (packet instanceof ClientChatPacket) {
             final ClientChatPacket chatPacket = (ClientChatPacket) packet;
-            ProtonServer.INSTANCE.getClientManager().sendPacketTo(new ServerChatPacket(this.client.getUsername(), chatPacket.getMessage()), chatPacket.getToUser());
+            ProtonServer.INSTANCE.getClientManager().sendPacketBesides(new ServerChatPacket(this.client.getUserName(), chatPacket.getMessage()), this.client.getChannel());
         } else if (packet instanceof ClientCommandPacket) {
             //TODO: DODAC KOMENDY LEL
-        } else if (packet instanceof ClientRequestKeyPacket) {
-            ProtonServer.INSTANCE.getClientManager().sendPacket(new ServerRequestKeyPacket());
         } else if (packet instanceof ClientResponseKeyPacket) {
-            final ClientResponseKeyPacket keyPacket = (ClientResponseKeyPacket) packet;
-            ProtonServer.INSTANCE.getClientManager().sendPacket(new ServerResponseKeyPacket(keyPacket.getUserName(), keyPacket.getPublicKey()));
+            this.client.setSecretKey(((ClientResponseKeyPacket) packet).getSecretKey());
         }
     }
 }

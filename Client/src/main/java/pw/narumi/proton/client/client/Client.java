@@ -1,29 +1,25 @@
 package pw.narumi.proton.client.client;
 
-import lombok.Data;
-import pw.narumi.proton.client.ProtonClient;
-import pw.narumi.proton.shared.packet.Packet;
-import pw.narumi.proton.shared.packet.PacketHandler;
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.security.KeyPair;
-import java.security.PublicKey;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import javax.crypto.SecretKey;
+import lombok.Data;
+import pw.narumi.proton.client.ProtonClient;
+import pw.narumi.proton.shared.cryptography.CryptographyHelper;
+import pw.narumi.proton.shared.packet.Packet;
+import pw.narumi.proton.shared.packet.PacketHandler;
 
 @Data
 public class Client {
 
-    private final Map<String, PublicKey> keys = new ConcurrentHashMap<>();
     private final String userName;
-    private final ByteBuffer buffer = ByteBuffer.allocate(4096);
+    private final ByteBuffer buffer = ByteBuffer.allocate(1024);
     private final PacketHandler packetHandler = new ClientPacketHandler(this);
     private SocketChannel channel;
-    private KeyPair keyPair;
+    private SecretKey secretKey;
 
     public void sendPacket(final Packet packet) {
         if (this.channel == null || !this.channel.isOpen())
@@ -39,8 +35,9 @@ public class Client {
         ) {
             dataOutputStream.writeByte(packetID);
             packet.write(dataOutputStream);
-            this.channel.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
-        } catch (IOException ex) {
+            final byte[] data = byteArrayOutputStream.toByteArray();
+            this.channel.write(ByteBuffer.wrap((this.secretKey != null ? CryptographyHelper.encodeData(data, this.secretKey) : data)));
+        } catch (final IOException ex) {
             ex.printStackTrace();
         }
     }
@@ -51,7 +48,7 @@ public class Client {
 
         try {
             this.channel.close();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             ex.printStackTrace();
         }
     }
