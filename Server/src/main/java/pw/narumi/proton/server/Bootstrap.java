@@ -15,7 +15,7 @@ public final class Bootstrap {
             } else {
                 port = Integer.parseInt(args[0]);
             }
-        } catch (final Exception e) {
+        } catch (final Exception ex) {
             System.err.println("Invalid server port, using the default one (1918).");
         }
 
